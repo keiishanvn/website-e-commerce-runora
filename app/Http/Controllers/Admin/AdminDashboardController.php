@@ -7,16 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order; 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        // 1. Ambil hitungan total produk dari tabel mu
         $totalProduk = DB::table('products')->count();
 
-        // 2. Hitung stok berdasarkan indikator (Asumsi field database bernama 'stock')
-        // Jika belum ada field stock di database, isi nilai default 0 dulu agar tidak error
+        // Hitung stok berdasarkan indikator (Asumsi field database bernama 'stock')
         // $stokMenipis = DB::table('products')->where('stock', '>', 0)->where('stock', '<', 10)->count();
         // $stokTersedia = DB::table('products')->where('stock', '>=', 10)->count();
         // $stokHabis = DB::table('products')->where('stock', 0)->count();
@@ -63,5 +63,40 @@ class AdminDashboardController extends Controller
             'totalPenjualan', 'totalPesanan', 'topProduk', 
             'aktivitasTerbaru', 'grafikPenjualan', 'statusPesanan'
         ));
+    }
+
+        public function distribusi()
+    {
+        return view('admin.distribusi');
+    }
+
+        public function pengaturan()
+    {
+        return view('admin.pengaturan');
+    }
+
+    public function pengaturanUpdate(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8'
+        ]);
+
+        // Masukkan data update nama dan email baru
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        // Jika kolom inputan password baru diisi admin, lakukan enkripsi Bcrypt
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        // Eksekusi simpan perubahan ke database mysql (HeidiSQL)
+        $user->save();
+
+        // Kembali ke halaman pengaturan dengan membawa pesan sukses berlatar hijau
+        return redirect()->back()->with('success', 'Pengaturan akun admin berhasil diperbarui!');
     }
 }

@@ -38,7 +38,7 @@
             <!-- Daftar Menu Navigasi -->
             <div class="flex flex-col gap-5 items-center w-full">
                 
-                <!-- Menu 1: Dashboard (Sudah Dihubungkan) -->
+                <!-- Menu 1: Dashboard -->
                 <div class="relative group flex items-center justify-center w-full">
                     <a href="{{ route('admin.dashboard') }}" 
                        class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 active:scale-90 {{ request()->routeIs('admin.dashboard') ? 'bg-black text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
@@ -47,7 +47,7 @@
                     <span class="absolute left-16 ml-2 px-3 py-1 bg-black text-white text-xs rounded-md invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-xl z-50">Dashboard</span>
                 </div>
 
-                <!-- Menu 2: Data Produk (Sudah Dihubungkan ke Route Kamu) -->
+                <!-- Menu 2: Data Produk -->
                 <div class="relative group flex items-center justify-center w-full">
                     <a href="{{ route('admin.produk.index') }}" 
                        class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 active:scale-90 {{ request()->routeIs('admin.produk.*') ? 'bg-black text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
@@ -58,7 +58,8 @@
 
                 <!-- Menu 3: Distribusi -->
                 <div class="relative group flex items-center justify-center w-full">
-                    <a href="#" class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center hover:bg-gray-100 transition-all duration-200 active:scale-90 text-gray-700">
+                    <a href="{{ route('admin.distribusi') }}"
+                       class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center hover:bg-gray-100 transition-all duration-200 active:scale-90 text-gray-700">
                         <i class="fas fa-shipping-fast text-lg"></i>
                     </a>
                     <span class="absolute left-16 ml-2 px-3 py-1 bg-black text-white text-xs rounded-md invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-xl z-50">Distribusi</span>
@@ -66,7 +67,8 @@
 
                 <!-- Menu 4: Pengaturan -->
                 <div class="relative group flex items-center justify-center w-full">
-                    <a href="#" class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center hover:bg-gray-100 transition-all duration-200 active:scale-90 text-gray-700">
+                    <a href="{{ route('admin.pengaturan') }}" 
+                        class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center hover:bg-gray-100 transition-all duration-200 active:scale-90 text-gray-700">
                         <i class="fas fa-cog text-lg"></i>
                     </a>
                     <span class="absolute left-16 ml-2 px-3 py-1 bg-black text-white text-xs rounded-md invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-xl z-50">Pengaturan</span>

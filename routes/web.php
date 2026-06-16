@@ -37,12 +37,15 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     // Manajemen CRUD Data Produk (Urutan Terstruktur)
-    Route::get('/produk', [AdminProductController::class, 'index'])->name('produk.index');          // Daftar Produk
-    Route::get('/produk/create', [AdminProductController::class, 'create'])->name('produk.create');  // Form Tambah
-    Route::post('/produk', [AdminProductController::class, 'store'])->name('produk.store');          // Proses Simpan
-    Route::get('/produk/{id}/edit', [AdminProductController::class, 'edit'])->name('produk.edit');  // Form Edit
-    Route::put('/produk/{id}', [AdminProductController::class, 'update'])->name('produk.update');    // Proses Update
-    Route::delete('/produk/{id}', [AdminProductController::class, 'destroy'])->name('produk.destroy'); // Hapus Produk
+    Route::get('/produk', [AdminProductController::class, 'index'])->name('produk.index');        
+    Route::get('/produk/create', [AdminProductController::class, 'create'])->name('produk.create');  
+    Route::post('/produk', [AdminProductController::class, 'store'])->name('produk.store');      
+    Route::get('/produk/{id}/edit', [AdminProductController::class, 'edit'])->name('produk.edit');  
+    Route::put('/produk/{id}', [AdminProductController::class, 'update'])->name('produk.update');  
+    Route::delete('/produk/{id}', [AdminProductController::class, 'destroy'])->name('produk.destroy'); 
+    Route::get('/distribusi', [AdminDashboardController::class, 'distribusi'])->name('distribusi');
+    Route::get('/pengaturan', [AdminDashboardController::class, 'pengaturan'])->name('pengaturan');
+    Route::put('/pengaturan/update', [AdminDashboardController::class, 'pengaturanUpdate'])->name('pengaturan.update');
 
 });
 
