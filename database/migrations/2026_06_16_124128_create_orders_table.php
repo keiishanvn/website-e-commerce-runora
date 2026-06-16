@@ -6,24 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('total_harga');
-            $table->string('status')->default('pending'); // pending, dikemas, dikirim, selesai
+            $table->string('invoice_number')->unique();
+            $table->decimal('total_harga', 12, 2); 
+            $table->enum('status', ['pending', 'paid', 'completed', 'cancelled'])->default('pending');
             $table->text('alamat');
-            $table->timestamps();
+            $table->string('no_hp');
+            $table->string('notes')->nullable();
+            
+            $table->timestamps(); // Otomatis membuat created_at dan updated_at
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('orders');

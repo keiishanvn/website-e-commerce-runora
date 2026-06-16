@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Order; 
 use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
@@ -18,13 +20,13 @@ class AdminDashboardController extends Controller
         // $stokMenipis = DB::table('products')->where('stock', '>', 0)->where('stock', '<', 10)->count();
         // $stokTersedia = DB::table('products')->where('stock', '>=', 10)->count();
         // $stokHabis = DB::table('products')->where('stock', 0)->count();
-        $stokMenipis = 0;
-        $stokTersedia = 0;
-        $stokHabis = 0;
+        $stokMenipis =  0;
+        $stokTersedia =  0;
+        $stokHabis =  0;
 
-        // 3. Mockup data penjualan & pesanan (Bisa kamu ganti query asli kalau tabel pesanan sudah siap)
-        $totalPenjualan = 120000000; 
-        $totalPesanan = 12;
+        // 3. Query Asli menggunakan Model Eloquent
+        $totalPenjualan = Order::where('status', 'completed')->sum('total_harga');
+        $totalPesanan = Order::count();
 
         // 4. Data Dummy untuk Top 5 Produk Terlaris
         $topProduk = collect([
