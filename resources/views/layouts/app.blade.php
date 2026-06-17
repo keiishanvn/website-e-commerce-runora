@@ -30,14 +30,17 @@
                         <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">Beranda</a>
                     </li>
                     <li class="nav-item px-1">
-                        <a class="nav-link {{ request()->routeIs('shop') ? 'active' : '' }}" href="{{ url('/shop') }}">Produk</a>
+                        <a class="nav-link {{ request()->routeIs('shop.index') || request()->routeIs('shop') ? 'active' : '' }}" href="{{ url('/shop') }}">Produk</a>
                     </li>
                     
                     @if(!Auth::check() || Auth::user()->role === 'pembeli')
                     <li class="nav-item position-relative px-2">
                         <a class="nav-link" href="{{ url('/cart') }}">
                             <i class="fas fa-shopping-cart fa-lg"></i>
-                            <span class="cart-count badge bg-danger rounded-pill" id="cartCount" style="position: absolute; top: -2px; right: -12px;">0</span>
+                            {{-- FIX SINKRONISASI: Menampilkan jumlah item asli database pembeli saat pertama load halaman --}}
+                            <span class="cart-count badge bg-danger rounded-pill" id="cartCount" style="position: absolute; top: -2px; right: -12px;">
+                                {{ Auth::check() ? \App\Models\Cart::where('user_id', Auth::id())->count() : 0 }}
+                            </span>
                         </a>
                     </li>
                     @endif
@@ -104,7 +107,6 @@
                 <div class="col-md-3 mb-4">
                     <h6>Kategori</h6>
                     <ul class="list-unstyled">
-                        {{-- FIX FILTER FOOTER: Menyelaraskan rute pencarian sesuai database --}}
                         <li><a href="{{ url('/shop?kategori=Running+Shoes') }}" class="text-muted text-decoration-none small">Running Shoes</a></li>
                         <li><a href="{{ url('/shop?kategori=Trail+Run') }}" class="text-muted text-decoration-none small">Trail Run</a></li>
                         <li><a href="{{ url('/shop?kategori=Apparel') }}" class="text-muted text-decoration-none small">Apparel</a></li>
@@ -131,18 +133,15 @@
     <script src="{{ asset('js/main.js') }}"></script>
     
     <script>
-        // Fungsi memanggil API kuantitas keranjang bawaan kamu saat pertama load
+        // Fungsi fallback pembantu mengambil sisa total item terupdate via AJAX
         function updateCartCount() {
             fetch('/api/cart/count')
-                .then(res => {
-                    if (!res.ok) throw new Error('Not logged in or access denied');
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
                     const cartCount = document.getElementById('cartCount');
-                    if (cartCount) cartCount.innerText = data.count || 0;
+                    if (cartCount && data.count !== undefined) cartCount.innerText = data.count;
                 })
-                .catch(err => console.log('Cart count info:', err.message));
+                .catch(err => console.log('Sinyal awal keranjang terwujud.'));
         }
         
         @auth
@@ -151,11 +150,11 @@
             @endif
         @endauth
 
-        // FIX UTAMA: Event Listener Penangkap Sinyal agar angka keranjang nambah secara REAL-TIME
+        // FIX UTAMA: Menangkap sinyal 'cartUpdated' global dan mengubah teks id 'cartCount'
         window.addEventListener('cartUpdated', function(e) {
             const cartBadge = document.getElementById('cartCount');
-            if (cartBadge) {
-                cartBadge.innerText = e.detail.count; // Langsung ganti angkanya tanpa loading
+            if (cartBadge && e.detail && e.detail.count !== undefined) {
+                cartBadge.innerText = e.detail.count; // Berubah otomatis secara real-time tanpa reload!
             }
         });
     </script>
