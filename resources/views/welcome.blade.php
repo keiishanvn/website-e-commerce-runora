@@ -100,9 +100,9 @@
         </div>
     </section>
 
-    {{-- ── 3. AREA DAFTAR PRODUK TERLARIS ── --}}
+    {{-- ── 3. AREA DAFTAR PRODUK TERBARU ── --}}
     <section class="container py-5" id="featuredProducts">
-        <h2 class="section-title font-weight-bold">Produk Terlaris</h2>
+        <h2 class="section-title font-weight-bold">Produk Terbaru</h2>
         <div class="row g-4 mt-2">
             @foreach($products as $product)
             <div class="col-md-3">

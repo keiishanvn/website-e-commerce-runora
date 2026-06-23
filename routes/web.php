@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-
 // ========================================================
 // ROUTE PUBLIC / KONSUMEN (TIDAK WAJIB LOGIN)
 // ========================================================
@@ -32,29 +31,45 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // Pengaturan Akun / Profile Pembeli
+    // Pengaturan Akun / Profile Pembeli Bawaan Laravel Breeze
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // EKOSISTEM KERANJANG BELANJA & CHECKOUT (DINAMIS VIA AJAX & SESSION)
-    // A. Tampilan Halaman Keranjang Belanja Utama (Tailwind page)
+    // ========================================================
+    // EKOSISTEM KERANJANG BELANJA, DASHBOARD AKUN & CHECKOUT (FIXED VIA CARTCONTROLLER)
+    // ========================================================
+    
+    // A. Tampilan Halaman Keranjang Belanja Utama
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     
-    // B. API AJAX: Tambah ke Keranjang (Mendukung fungsi store kamu)
+    // B. API AJAX: Tambah ke Keranjang
     Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add');
     
-    // C. API AJAX: Update Jumlah Item Plus/Minus
-    Route::patch('/keranjang/{id}', [CartController::class, 'update'])->name('cart.update');
+    // C. Jalur Instan "Beli Sekarang" dari halaman detail produk
+    Route::post('/beli-sekarang', [CartController::class, 'beliSekarang'])->name('cart.buy_now');
     
-    // D. Hapus satu item dari keranjang belanja
+    // D. API AJAX: Update Jumlah Item Plus/Minus
+    Route::match(['POST', 'PATCH'], '/keranjang/{id}', [CartController::class, 'update'])->name('cart.update');
+    
+    // E. Hapus satu item dari keranjang belanja
     Route::delete('/keranjang/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 
-    // E. FIX TAMBAHAN: Proses Validasi Item Terpilih saat klik tombol Checkout
+    // F. Proses Validasi Item Terpilih saat klik tombol Checkout di keranjang
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
-    // F. FIX TAMBAHAN: Tampilan Form Alamat Pengiriman setelah lolos Checkout
+    // G. Tampilan Halaman Formulir Alamat Pengiriman / Pembayaran setelah lolos Checkout
     Route::get('/checkout', [CartController::class, 'checkoutIndex'])->name('checkout.index');
+    
+    // FIX PROSES CHECKOUT: Dialihkan ke CartController agar proses simpan riwayat & hapus cart lancar jaya
+    Route::post('/checkout/proses', [CartController::class, 'process'])->name('checkout.process');
+    
+    // H. DASHBOARD AKUN: Jalur Halaman Riwayat Pesanan Pembeli (Figma Layout)
+    Route::get('/riwayat-pesanan', [CartController::class, 'riwayatIndex'])->name('riwayat.pesanan');
+    
+    // I. DASHBOARD AKUN: Jalur Halaman Pengaturan Akun (Figma Layout)
+    Route::get('/pengaturan-akun', [CartController::class, 'settingsIndex'])->name('user.settings');
+    Route::post('/pengaturan-akun/update', [CartController::class, 'settingsUpdate'])->name('user.settings.update');
 }); 
 
 
@@ -66,7 +81,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Halaman Utama Dashboard Admin
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
-    // Manajemen CRUD Data Produk (Urutan Terstruktur)
+    // Manajemen CRUD Data Produk
     Route::get('/produk', [AdminProductController::class, 'index'])->name('produk.index');        
     Route::get('/produk/create', [AdminProductController::class, 'create'])->name('produk.create');  
     Route::post('/produk', [AdminProductController::class, 'store'])->name('produk.store');      
@@ -78,6 +93,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/distribusi', [AdminDashboardController::class, 'distribusi'])->name('distribusi');
     Route::get('/pengaturan', [AdminDashboardController::class, 'pengaturan'])->name('pengaturan');
     Route::put('/pengaturan/update', [AdminDashboardController::class, 'pengaturanUpdate'])->name('pengaturan.update');
+});
+
+// Shortcut Pembersih Session
+Route::get('/clear-session-sekar', function() {
+    session()->forget('checkout_items');
+    return "Session checkout lama berhasil dibuang! Sekarang silakan kembali ke katalog atau keranjang dan coba klik tombolnya lagi.";
 });
 
 require __DIR__.'/auth.php';

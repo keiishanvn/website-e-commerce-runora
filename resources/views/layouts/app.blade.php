@@ -37,7 +37,6 @@
                     <li class="nav-item position-relative px-2">
                         <a class="nav-link" href="{{ url('/cart') }}">
                             <i class="fas fa-shopping-cart fa-lg"></i>
-                            {{-- FIX SINKRONISASI: Menampilkan jumlah item asli database pembeli saat pertama load halaman --}}
                             <span class="cart-count badge bg-danger rounded-pill" id="cartCount" style="position: absolute; top: -2px; right: -12px;">
                                 {{ Auth::check() ? \App\Models\Cart::where('user_id', Auth::id())->count() : 0 }}
                             </span>
@@ -57,10 +56,12 @@
                                     <li><hr class="dropdown-divider"></li>
                                 @endif
 
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profil</a></li>
+                                {{-- FIX UTAMA: Link Profil sekarang mengarah resmi ke halaman Pengaturan Akun --}}
+                                <li><a class="dropdown-item" href="{{ route('user.settings') }}"><i class="fas fa-user me-2"></i> Profil</a></li>
                                 
                                 @if(Auth::user()->role === 'pembeli')
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-bag me-2"></i> Pesanan</a></li>
+                                    {{-- FIX UTAMA: Link Pesanan sekarang mengarah resmi ke halaman Riwayat Pesanan --}}
+                                    <li><a class="dropdown-item" href="{{ route('riwayat.pesanan') }}"><i class="fas fa-shopping-bag me-2"></i> Pesanan</a></li>
                                 @endif
                                 
                                 <li><hr class="dropdown-divider"></li>
@@ -133,7 +134,6 @@
     <script src="{{ asset('js/main.js') }}"></script>
     
     <script>
-        // Fungsi fallback pembantu mengambil sisa total item terupdate via AJAX
         function updateCartCount() {
             fetch('/api/cart/count')
                 .then(res => res.json())
@@ -150,11 +150,10 @@
             @endif
         @endauth
 
-        // FIX UTAMA: Menangkap sinyal 'cartUpdated' global dan mengubah teks id 'cartCount'
         window.addEventListener('cartUpdated', function(e) {
             const cartBadge = document.getElementById('cartCount');
             if (cartBadge && e.detail && e.detail.count !== undefined) {
-                cartBadge.innerText = e.detail.count; // Berubah otomatis secara real-time tanpa reload!
+                cartBadge.innerText = e.detail.count;
             }
         });
     </script>

@@ -4,7 +4,7 @@
 
 @section('content')
 {{-- Bootstrap Utilities & Grid System Container --}}
-<div class="container py-5" style="max-w: 960px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+<div class="container py-5" style="max-width: 960px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
 
     {{-- Judul Halaman Sesuai Gambar --}}
     <h2 class="fw-bold text-dark mb-4 text-uppercase tracking-wider fs-3">KERANJANG BELANJA</h2>
@@ -16,41 +16,40 @@
         </div>
     @endif
 
-    @if ($carts->isEmpty())
-        <div class="text-center py-5 border rounded-4 bg-light shadow-sm">
-            <i class="fas fa-shopping-cart text-muted mb-3" style="font-size: 3rem;"></i>
-            <p class="text-secondary fw-medium mb-3">Keranjang belanja kamu saat ini masih kosong.</p>
-            <a href="{{ route('shop.index') }}" class="btn btn-danger rounded-pill px-4 fw-bold">Mulai Belanja →</a>
-        </div>
-    @else
+    <div id="empty-cart-message" class="text-center py-5 border rounded-4 bg-light shadow-sm {{ $carts->isEmpty() ? '' : 'd-none' }}">
+        <i class="fas fa-shopping-cart text-muted mb-3" style="font-size: 3rem;"></i>
+        <p class="text-secondary fw-medium mb-3">Keranjang belanja kamu saat ini masih kosong.</p>
+        <a href="{{ route('shop.index') }}" class="btn btn-danger rounded-pill px-4 fw-bold">Mulai Belanja →</a>
+    </div>
 
+    @if (!$carts->isEmpty())
         <form action="{{ route('cart.checkout') }}" method="POST" id="cart-form">
             @csrf
 
             {{-- Struktur Tabel Utama dengan Class Bootstrap 5 Resmi --}}
             <div class="table-responsive mb-4">
-                <table class="table align-middle border-0 m-0">
+                <table class="table align-middle border-0 m-0" id="cart-table">
 
                     {{-- Header Berwarna Merah Red-700 Sesuai Gambar --}}
                     <thead>
                         <tr class="text-white align-middle" style="background-color: #b91c1c; font-size: 0.95rem;">
-                            <th class="px-4 py-3 fw-semibold border-0 rounded-start" style="width: 40%;">Produk</th>
+                            <th class="px-4 py-3 fw-semibold border-0 rounded-start" style="width: 35%;">Produk</th>
                             <th class="text-center px-4 py-3 fw-semibold border-0" style="width: 15%;">Harga</th>
                             <th class="text-center px-4 py-3 fw-semibold border-0" style="width: 15%;">Jumlah</th>
                             <th class="text-center px-4 py-3 fw-semibold border-0" style="width: 20%;">Subtotal</th>
-                            <th class="text-center px-4 py-3 border-0 rounded-end" style="width: 10%;"></th>
+                            <th class="text-center px-4 py-3 fw-semibold border-0" style="width: 10%;">Pilih</th>
+                            <th class="text-center px-4 py-3 border-0 rounded-end" style="width: 5%;">Aksi</th>
                         </tr>
                     </thead>
 
                     {{-- Isi Daftar Produk --}}
                     <tbody class="border-0">
                         @foreach ($carts as $cart)
-                        <tr class="border-bottom border-2 border-light">
+                        <tr class="border-bottom border-2 border-light row-cart-item" id="product-row-{{ $cart->id }}">
 
                             {{-- Komponen Gambar + Detail Produk --}}
                             <td class="py-4 px-3">
                                 <div class="d-flex align-items-center gap-3">
-                                    {{-- Box Gambar Putih dengan Border Tipis Sesuai Gambar --}}
                                     <div class="border border-secondary-subtle rounded-3 p-1 bg-white flex-shrink-0 d-flex align-items-center justify-content-center" 
                                          style="width: 90px; height: 90px; overflow: hidden;">
                                         <img src="{{ $cart->product->gambar ? asset('products/' . $cart->product->gambar) : asset('images/placeholder.png') }}" 
@@ -64,19 +63,20 @@
                                 </div>
                             </td>
 
-                            {{-- Komponen Harga Satuan Riil Dari Database --}}
+                            {{-- Harga Satuan --}}
                             <td class="py-4 px-3 text-center fw-semibold text-secondary-dark fs-6 whitespace-nowrap">
                                 Rp. {{ number_format($cart->product->harga, 0, ',', '.') }}
                             </td>
 
-                            {{-- Komponen Tombol Plus Minus Kotak Abu Sesuai Gambar --}}
+                            {{-- Tombol Plus Minus Kotak Abu Sesuai Gambar --}}
                             <td class="py-4 px-3">
                                 <div class="d-flex justify-content-center">
                                     <div class="input-group input-group-sm border border-secondary rounded overflow-hidden bg-light" style="width: 90px;">
+                                        {{-- Tombol Minus Terbuka Aksesnya Tanpa Atribut Pembatas Min Kaku --}}
                                         <button class="btn btn-link text-decoration-none text-dark fw-bold px-2 py-0 bg-secondary-subtle border-end border-secondary" 
                                                 type="button" onclick="updateQty({{ $cart->id }}, -1)">-</button>
                                         
-                                        <input type="number" id="qty-{{ $cart->id }}" value="{{ $cart->kuantitas }}" min="1" readonly 
+                                        <input type="number" id="qty-{{ $cart->id }}" value="{{ $cart->kuantitas }}" readonly 
                                                class="form-control text-center bg-white border-0 p-0 fw-bold text-dark" style="font-size: 0.85rem; height: 28px;">
                                         
                                         <button class="btn btn-link text-decoration-none text-dark fw-bold px-2 py-0 bg-secondary-subtle border-start border-secondary" 
@@ -85,12 +85,12 @@
                                 </div>
                             </td>
 
-                            {{-- Komponen Hitungan Subtotal Dinamis Riil --}}
+                            {{-- Hitungan Subtotal Dinamis Riil --}}
                             <td class="py-4 px-3 text-center fw-bold text-dark fs-6 whitespace-nowrap" id="subtotal-{{ $cart->id }}">
                                 Rp. {{ number_format($cart->product->harga * $cart->kuantitas, 0, ',', '.') }}
                             </td>
 
-                            {{-- Komponen Kotak Checkbox Tebal Paling Kanan --}}
+                            {{-- Kotak Checkbox Centang Tebal --}}
                             <td class="py-4 px-3 text-center">
                                 <div class="d-flex justify-content-center align-items-center">
                                     <input type="checkbox" name="selected[]" value="{{ $cart->id }}" 
@@ -101,6 +101,13 @@
                                 </div>
                             </td>
 
+                            {{-- AKSI BARU: Tombol Hapus Sampah Langsung Dari Baris Tabel --}}
+                            <td class="py-4 px-3 text-center">
+                                <button type="button" class="btn btn-link text-danger p-0" onclick="confirmDeleteRow({{ $cart->id }})">
+                                    <i class="fas fa-trash-alt fs-5"></i>
+                                </button>
+                            </td>
+
                         </tr>
                         @endforeach
                     </tbody>
@@ -108,38 +115,30 @@
                 </table>
             </div>
 
-            {{-- Garis Tipis Abu Pembatas Sesuai Gambar Mockup --}}
             <hr class="text-secondary-subtle border-1 my-4">
 
-            {{-- Ringkasan Grand Total & Blok Button Aksi Rata Kanan (Flex End) --}}
-            <div class="d-flex flex-column align-items-end gap-3 mt-3 w-100 pe-2">
-                
-                {{-- Tampilan Informasi Total Belanja Riil --}}
+            {{-- Ringkasan Grand Total & Tombol Navigasi --}}
+            <div id="cart-summary-area" class="d-flex flex-column align-items-end gap-3 mt-3 w-100 pe-2">
                 <div class="d-flex align-items-center" style="gap: 60px;">
                     <span class="fw-bold text-dark fs-5">Total:</span>
                     <span class="fw-bold text-dark fs-5" id="grand-total">Rp. 0</span>
                 </div>
 
-                {{-- Blok Formasi Tombol Navigasi Sesuai Gambar --}}
                 <div class="d-flex align-items-center gap-3">
-                    {{-- Tombol Lanjut Belanja (Putih Border Hitam, Kotak Semi Bulat Lancip) --}}
                     <a href="{{ route('shop.index') }}" 
                        class="btn btn-white border border-dark text-dark fw-bold text-uppercase fs-7 px-4 py-2 rounded-2 tracking-wide shadow-sm hover:bg-dark hover:text-white transition-all text-decoration-none">
                         Lanjut Belanja
                     </a>
                     
-                    {{-- Tombol Checkout (Kotak Border Merah, Teks Merah Menyala) --}}
                     <button type="submit" 
                             class="btn btn-white border border-danger text-danger fw-bold text-uppercase fs-7 px-4 py-2 rounded-2 tracking-wide shadow-sm hover:bg-danger hover:text-white transition-all" 
                             id="checkout-btn">
                         Checkout (<span id="checkout-count">0</span>)
                     </button>
                 </div>
-
             </div>
 
         </form>
-
     @endif
 </div>
 
@@ -167,24 +166,34 @@
             }
         });
 
-        // Inject data asli ke elemen layar
-        document.getElementById('grand-total').textContent = 'Rp. ' + total.toLocaleString('id-ID');
-        document.getElementById('checkout-count').textContent = count;
-
-        // Validasi proteksi tombol checkout jika tidak ada barang yang dicentang
+        const grandTotalElement = document.getElementById('grand-total');
+        const checkoutCountElement = document.getElementById('checkout-count');
         const checkoutBtn = document.getElementById('checkout-btn');
+
+        if (grandTotalElement) grandTotalElement.textContent = 'Rp. ' + total.toLocaleString('id-ID');
+        if (checkoutCountElement) checkoutCountElement.textContent = count;
+
         if (checkoutBtn) {
             checkoutBtn.disabled = (count === 0);
         }
     }
 
-    // 3. Fungsi plus minus kuantitas sinkron database via AJAX Fetch
+    // 3. Fungsi plus minus kuantitas sinkron database via AJAX Fetch (REVISI LOGIKA MINUS HALO DELETE)
     function updateQty(cartId, delta) {
-        const input  = document.getElementById('qty-' + cartId);
+        const input = document.getElementById('qty-' + cartId);
         if (!input) return;
 
-        const newQty = Math.max(1, parseInt(input.value) + delta);
-        input.value  = newQty;
+        const currentQty = parseInt(input.value) || 1;
+        const newQty = currentQty + delta;
+
+        // JIKA KUANTITAS SUDAH 1 DAN PEMBELI MENYENTUH TOMBOL MINUS (-), ARTINYA INGIN MENGHAPUS PRODUK
+        if (newQty < 1) {
+            confirmDeleteRow(cartId);
+            return;
+        }
+
+        // Jalankan perubahan lokal layar jika kuantitas di atas 1
+        input.value = newQty;
 
         if (prices[cartId]) {
             prices[cartId].qty = newQty;
@@ -197,7 +206,6 @@
             }
         }
 
-        // Jalankan fetch penentu permanen ke MySQL
         fetch(`/keranjang/${cartId}`, {
             method: 'POST',
             headers: {
@@ -211,17 +219,64 @@
         updateTotal();
     }
 
-    // FIX AUTO RUN: Otomatis hitung total harga nyata saat halaman selesai di-render pembeli
+    // 4. JALUR BARU: Pemicu Munculnya Pop-Up Konfirmasi Penghapusan Item Keranjang
+    function confirmDeleteRow(cartId) {
+        const confirmAction = confirm("Apakah kamu yakin ingin menghapus produk ini dari keranjang belanja RUNORA?");
+        
+        if (confirmAction) {
+            // Tembakkan request AJAX DELETE ke server backend Laravel
+            fetch(`/keranjang/${cartId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-HTTP-Method-Override': 'DELETE',
+                }
+            })
+            .then(response => {
+                // Hapus baris tabel di mata browser secara langsung/real-time
+                const productRow = document.getElementById('product-row-' + cartId);
+                if (productRow) productRow.remove();
+
+                // Buang variabel item dari memori kalkulator javascript
+                delete prices[cartId];
+
+                // Hitung ulang total biaya belanja terbaru
+                updateTotal();
+
+                // Cek apakah keranjang beneran sudah habis total
+                checkEmptyCartState();
+            })
+            .catch(err => console.error('Gagal menghapus produk:', err));
+        }
+    }
+
+    // Fungsi Pembantu: Mengubah tampilan halaman jika isi keranjang telah kosong pasca dihapus
+    function checkEmptyCartState() {
+        const remainingRows = document.querySelectorAll('.row-cart-item');
+        if (remainingRows.length === 0) {
+            const cartTableWrapper = document.querySelector('.table-responsive');
+            const cartSummaryArea = document.getElementById('cart-summary-area');
+            const horizontalRule = document.querySelector('hr');
+            
+            if (cartTableWrapper) cartTableWrapper.remove();
+            if (cartSummaryArea) cartSummaryArea.remove();
+            if (horizontalRule) horizontalRule.remove();
+
+            const emptyMessage = document.getElementById('empty-cart-message');
+            if (emptyMessage) emptyMessage.classList.remove('d-none');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         updateTotal();
     });
 </script>
 
 <style>
-    /* CSS Utility penyeimbang ukuran teks tombol */
     .fs-7 { font-size: 0.8rem !important; }
-    .thumbnail-box { border: 1px solid #ddd; }
     input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     input[type=number] { -moz-appearance: textfield; }
+    .cursor-pointer { cursor: pointer; }
 </style>
 @endsection

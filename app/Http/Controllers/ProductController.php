@@ -23,16 +23,19 @@ class ProductController extends Controller
             $query->where('kategori', $kategori);
         }
 
-        // Eksekusi ambil data produknya
-        $products = $query->get();
-
-        // STRATEGI PEMBAGIAN HALAMAN:
-        // Jika URL diakses melalui rute '/shop', maka lemparkan datanya ke shop.blade.php
+        // STRATEGI PEMBAGIAN & PEMBATASAN HALAMAN:
+        
+        // JALUR A: Jika URL diakses melalui rute '/shop' atau sedang memfilter kategori
         if ($request->is('shop*') || $request->has('kategori')) {
+            // Ambil SEMUA produk tanpa batasan untuk katalog lengkap
+            $products = $query->get();
             return view('shop', compact('products'));
         }
 
-        // Jika diakses biasa (Halaman Utama / Beranda), lemparkan ke welcome.blade.php
+        // JALUR B: Jika diakses via Halaman Utama / Beranda (welcome.blade.php)
+        // 🌟 REVISI: Dibatasi maksimal hanya 8 produk terbaru saja agar grid Figma tetap rapi
+        $products = $query->latest()->take(8)->get();
+        
         return view('welcome', compact('products')); 
     }
 

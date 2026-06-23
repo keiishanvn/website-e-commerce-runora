@@ -9,9 +9,8 @@
     </a>
 
     <div class="row">
-        {{-- ── KIRI: AREA MEDIA / GAMBAR PRODUK ── --}}
+        {{-- ── KIRI: AREA GAMBAR PRODUK ── --}}
         <div class="col-md-6">
-            {{-- Box Gambar Utama (Hero Image) --}}
             <div class="position-relative border rounded-4 overflow-hidden shadow-sm bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
                 @if($product->gambar)
                     <img id="mainProductImage" src="{{ asset('products/' . $product->gambar) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
@@ -29,21 +28,17 @@
                 @endif
             </div>
 
-            {{-- AREA MENAMPILKAN GAMBAR DETAIL TAMBAHAN (THUMBNAILS) --}}
             @php
                 $gambarDetailList = DB::table('product_images')->where('product_id', $product->id)->get();
             @endphp
 
             @if($gambarDetailList->count() > 0)
                 <div class="row g-2 mt-2">
-                    {{-- Kotak Gambar Utama Versi Kecil --}}
                     <div class="col-3">
                         <div class="border rounded-3 overflow-hidden bg-light cursor-pointer thumbnail-box active-thumbnail" style="height: 80px;" onclick="changeMainImage('{{ asset('products/' . $product->gambar) }}', this)">
                             <img src="{{ asset('products/' . $product->gambar) }}" class="w-100 h-100 object-fit-cover">
                         </div>
                     </div>
-                    
-                    {{-- Loop Semua Gambar Detail --}}
                     @foreach($gambarDetailList as $detail)
                         <div class="col-3">
                             <div class="border rounded-3 overflow-hidden bg-light cursor-pointer thumbnail-box" style="height: 80px;" onclick="changeMainImage('{{ asset('products/' . $detail->gambar_detail) }}', this)">
@@ -55,7 +50,7 @@
             @endif
         </div>
         
-        {{-- ── KANAN: DETAIL INFORMASI & TOMBOL BELI (BOOTSTRAP MURNI) ── --}}
+        {{-- ── KANAN: DETAIL INFORMASI & TOMBOL UTAMA ── --}}
         <div class="col-md-6">
             <h1 class="fw-bold mb-2 text-dark">{{ $product->name }}</h1>
             <span class="badge bg-danger rounded-pill px-3 py-2 mb-3">{{ $product->kategori ?? 'Umum' }}</span>
@@ -66,7 +61,6 @@
                 $hargaSetelahDiskon = $hargaAsli - ($hargaAsli * $persenDiskon / 100);
             @endphp
 
-            {{-- MANAGEMENT TAMPILAN HARGA CORET --}}
             @if($persenDiskon > 0)
                 <div class="mb-4 p-3 bg-light rounded-3">
                     <span class="text-decoration-line-through text-muted me-2 fs-5">
@@ -82,7 +76,6 @@
                 </div>
             @endif
             
-            {{-- MANAJEMEN STOK --}}
             <div class="mb-4">
                 @if($product->stok > 0)
                     <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">
@@ -95,38 +88,33 @@
                 @endif
             </div>
             
-            {{-- DESKRIPSI --}}
             <div class="mb-4 border-top pt-3">
                 <label class="fw-bold text-dark mb-2">Deskripsi Produk:</label>
                 <p class="text-secondary lh-base" style="text-align: justify;">{{ $product->deskripsi ?? 'Belum ada deskripsi untuk produk ini.' }}</p>
             </div>
 
-            {{-- FORM AJAX SINKRONISASI (SISTEM BOOTSTRAP TANPA SIZE) --}}
+            {{-- FORM 1: HANYA UNTUK TAMBAH KE KERANJANG --}}
             <form id="add-to-cart-form" class="mt-4 border-top pt-3">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 
-                {{-- Input Jumlah Beli --}}
                 <div class="mb-4">
                     <label class="fw-bold text-dark mb-2">Jumlah Beli:</label>
                     <div class="d-flex align-items-center gap-2">
-                        {{-- Tombol Minus --}}
                         <button class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" 
                                 style="width: 40px; height: 40px; padding: 0;"
                                 id="decreaseQty" type="button" onclick="changeQuantity(-1)" {{ $product->stok <= 0 ? 'disabled' : '' }}>
                             <i class="fas fa-minus"></i>
                         </button>
                         
-                        {{-- Kolom Angka (id dan name disamakan jadi kuantitas) --}}
                         <input type="number" id="display-qty" name="kuantitas" 
                                value="{{ $product->stok > 0 ? 1 : 0 }}" 
                                min="{{ $product->stok > 0 ? 1 : 0 }}" 
                                max="{{ $product->stok }}" 
-                               style="width: 70px; height: 40px; text-align: center;" 
+                               style="width: 60px; height: 40px; text-align: center;" 
                                class="form-control text-center fw-bold bg-white" readonly
                                {{ $product->stok <= 0 ? 'disabled' : '' }}>
                         
-                        {{-- Tombol Plus --}}
                         <button class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" 
                                 style="width: 40px; height: 40px; padding: 0;"
                                 id="increaseQty" type="button" onclick="changeQuantity(1)" {{ $product->stok <= 0 ? 'disabled' : '' }}>
@@ -135,21 +123,108 @@
                     </div>
                 </div>
                 
-                {{-- Baris Tombol Utama --}}
                 <div class="d-flex gap-2 w-100 mt-4">
-                    <button type="submit" class="btn btn-danger btn-lg flex-grow-1 py-3 rounded-pill fw-bold shadow-sm" 
-                            id="addToCartBtn" {{ $product->stok <= 0 ? 'disabled' : '' }}>
+                    <button type="submit" class="btn btn-danger btn-lg flex-grow-1 py-3 rounded-pill fw-bold shadow-sm" id="addToCartBtn" {{ $product->stok <= 0 ? 'disabled' : '' }}>
                         <i class="fas fa-shopping-cart me-2"></i> Tambah ke Keranjang
                     </button>
-
-                    <a href="{{ route('checkout.index') }}" class="btn btn-outline-secondary btn-lg py-3 px-4 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center text-decoration-none">
-                        <i class="fas fa-store me-2"></i> Lanjut Belanja
-                    </a>
                 </div>
             </form>
+
+            {{-- FORM 2: UNTUK BELI SEKARANG --}}
+            <form action="{{ route('cart.buy_now') }}" method="POST" class="w-100 mt-2" id="direct-buy-form">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <input type="hidden" name="kuantitas" value="1" id="buy-now-qty-hidden">
+                
+                <button type="submit" class="btn btn-outline-secondary btn-lg w-100 py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center text-decoration-none"
+                        id="buyNowBtn" {{ $product->stok <= 0 ? 'disabled' : '' }}>
+                    <i class="fas fa-wallet me-2"></i> Beli Sekarang
+                </button>
+            </form>
+
         </div>
     </div>
 </div>
+
+<style>
+    .thumbnail-box { transition: all 0.2s; border: 2px solid transparent !important; }
+    .thumbnail-box:hover { border-color: #ddd !important; }
+    .active-thumbnail { border-color: #dc3545 !important; }
+    .cursor-pointer { cursor: pointer; }
+</style>
+@endsection {{-- SELESAI UNTUK CONTENT DISINI --}}
+
+{{-- STRUKTUR YANG BENAR: BLOK PUSH SCRIPT DI LUAR SECTION --}}
+@push('scripts')
+<script>
+    function changeMainImage(imageSrc, element) {
+        const mainImg = document.getElementById('mainProductImage');
+        if (mainImg) mainImg.src = imageSrc;
+        document.querySelectorAll('.thumbnail-box').forEach(box => box.classList.remove('active-thumbnail'));
+        if (element) element.classList.add('active-thumbnail');
+    }
+
+    function changeQuantity(delta) {
+        const qtyInput = document.getElementById('display-qty');
+        if (!qtyInput) return;
+        const maxStok = parseInt(qtyInput.getAttribute('max')) || 0;
+        let currentQty = parseInt(qtyInput.value) || 1;
+        let newQty = currentQty + delta;
+        if (newQty >= 1 && newQty <= maxStok) {
+            qtyInput.value = newQty;
+        }
+    }
+
+    document.getElementById('buyNowBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('buy-now-qty-hidden').value = document.getElementById('display-qty').value;
+    });
+
+    document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        const productId = this.querySelector('input[name="product_id"]').value;
+        const qtyValue = parseInt(document.getElementById('display-qty').value) || 1;
+        const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+        const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : '';
+
+        addToCartBtn.disabled = true;
+        addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
+
+        fetch("{{ route('cart.add') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken,
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                kuantitas: qtyValue
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { count: data.cart_count } }));
+                window.location.href = "{{ route('checkout.index') }}";
+            } else {
+                alert(data.message || 'Gagal menambahkan produk ke keranjang.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan server. Pastikan sesi login aktif!');
+        })
+        .finally(() => {
+            addToCartBtn.disabled = false;
+            addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Tambah ke Keranjang';
+        });
+    });
+</script>
+@endpush
 
 <style>
     .thumbnail-box {
@@ -235,7 +310,7 @@
             }
             return response.json();
         })
-        .then(data => {
+.then(data => {
             if (data.success) {
                 alert(data.message);
                 
@@ -244,8 +319,8 @@
                     detail: { count: data.cart_count } 
                 }));
                 
-                // Lempar ke halaman keranjang belanja
-                window.location.href = "{{ route('cart.index') }}";
+                // FIX UNTUK GAMBAR 2: Setelah sukses masuk keranjang via AJAX, pembeli langsung dilempar ke halaman pembayaran!
+                window.location.href = "{{ route('checkout.index') }}";
             } else {
                 alert(data.message || 'Gagal menambahkan produk ke keranjang.');
             }
@@ -262,4 +337,3 @@
     });
 </script>
 @endpush
-@endsection
