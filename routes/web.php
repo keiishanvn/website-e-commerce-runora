@@ -7,10 +7,7 @@ use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// ========================================================
 // ROUTE PUBLIC / KONSUMEN (TIDAK WAJIB LOGIN)
-// ========================================================
-
 // 1. Halaman Utama / Dashboard Public
 Route::get('/', [ProductController::class, 'index'])->name('home');
 
@@ -21,9 +18,7 @@ Route::get('/shop', [ProductController::class, 'index'])->name('shop.index');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
 
 
-// ========================================================
 // ROUTE REGULER YANG MEMBUTUHKAN LOGIN (PEMBELI / USER)
-// ========================================================
 Route::middleware('auth')->group(function () {
     
     // Dashboard Setelah Login (Khusus Pembeli bawaan Laravel Breeze)
@@ -36,15 +31,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // ========================================================
+
     // EKOSISTEM KERANJANG BELANJA, DASHBOARD AKUN & CHECKOUT (FIXED VIA CARTCONTROLLER)
-    // ========================================================
-    
     // A. Tampilan Halaman Keranjang Belanja Utama
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     
     // B. API AJAX: Tambah ke Keranjang
-    Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add');
+   Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'store'])->name('cart.add');
     
     // C. Jalur Instan "Beli Sekarang" dari halaman detail produk
     Route::post('/beli-sekarang', [CartController::class, 'beliSekarang'])->name('cart.buy_now');

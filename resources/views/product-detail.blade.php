@@ -13,14 +13,14 @@
         <div class="col-md-6">
             <div class="position-relative border rounded-4 overflow-hidden shadow-sm bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
                 @if($product->gambar)
-                    <img id="mainProductImage" src="{{ asset('products/' . $product->gambar) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
+                    <img id="mainProductImage" src="{{ asset('products/' . $product->gambar) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 p-3" style="object-fit: contain;">
                 @else
                     <div class="text-center p-4 text-muted">
                         <i class="fas fa-shoe-prints fa-4x mb-3 text-danger"></i>
                         <h5>[ Gambar {{ $product->name }} ]</h5>
                     </div>
                 @endif
-                
+
                 @if($product->diskon > 0)
                     <span class="position-absolute top-0 start-0 badge bg-danger m-3 fs-6 px-3 py-2 rounded-pill shadow-sm">
                         Hemat {{ $product->diskon }}%
@@ -28,6 +28,7 @@
                 @endif
             </div>
 
+            {{-- Thumbnail Gambar Detail --}}
             @php
                 $gambarDetailList = DB::table('product_images')->where('product_id', $product->id)->get();
             @endphp
@@ -152,42 +153,54 @@
     .active-thumbnail { border-color: #dc3545 !important; }
     .cursor-pointer { cursor: pointer; }
 </style>
-@endsection {{-- SELESAI UNTUK CONTENT DISINI --}}
+@endsection
 
-{{-- STRUKTUR YANG BENAR: BLOK PUSH SCRIPT DI LUAR SECTION --}}
 @push('scripts')
 <script>
+    // 1. Fungsi Ganti Gambar Detail Utama
     function changeMainImage(imageSrc, element) {
         const mainImg = document.getElementById('mainProductImage');
         if (mainImg) mainImg.src = imageSrc;
+        
         document.querySelectorAll('.thumbnail-box').forEach(box => box.classList.remove('active-thumbnail'));
         if (element) element.classList.add('active-thumbnail');
     }
 
+    // 2. Fungsi Tombol Plus Minus Kuantitas
     function changeQuantity(delta) {
         const qtyInput = document.getElementById('display-qty');
         if (!qtyInput) return;
+        
         const maxStok = parseInt(qtyInput.getAttribute('max')) || 0;
         let currentQty = parseInt(qtyInput.value) || 1;
         let newQty = currentQty + delta;
+        
         if (newQty >= 1 && newQty <= maxStok) {
             qtyInput.value = newQty;
         }
     }
 
-    document.getElementById('buyNowBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.getElementById('buy-now-qty-hidden').value = document.getElementById('display-qty').value;
+    // 3. Sinkronisasi Kuantitas ke Form "Beli Sekarang"
+    document.getElementById('direct-buy-form').addEventListener('submit', function() {
+        const displayQty = document.getElementById('display-qty').value;
+        document.getElementById('buy-now-qty-hidden').value = displayQty;
     });
 
+    // 4. Aksi Submit AJAX Tambah Ke Keranjang (SUDAH DIPERKUAT DETEKSI ERROR)
     document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
         e.preventDefault();
 
         const addToCartBtn = document.getElementById('addToCartBtn');
         const productId = this.querySelector('input[name="product_id"]').value;
         const qtyValue = parseInt(document.getElementById('display-qty').value) || 1;
+        
         const tokenMeta = document.querySelector('meta[name="csrf-token"]');
         const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : '';
+
+        if (!csrfToken) {
+            alert('Token keamanan (CSRF) tidak ditemukan. Silakan refresh halaman Anda.');
+            return;
+        }
 
         addToCartBtn.disabled = true;
         addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
@@ -204,133 +217,47 @@
                 kuantitas: qtyValue
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 419 || response.status === 401) {
+                throw new Error('AUTH_EXPIRED');
+            }
+            
+            // JIKA balasan server bukan JSON murni (balasan berupa HTML Error)
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                return response.text().then(text => { 
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    const errorMessage = doc.querySelector('.exception-message')?.textContent || 'Sistem mengembalikan HTML Error, bukan JSON.';
+                    throw new Error(errorMessage);
+                });
+            }
+            
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 alert(data.message);
-                window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { count: data.cart_count } }));
-                window.location.href = "{{ route('checkout.index') }}";
-            } else {
-                alert(data.message || 'Gagal menambahkan produk ke keranjang.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan server. Pastikan sesi login aktif!');
-        })
-        .finally(() => {
-            addToCartBtn.disabled = false;
-            addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Tambah ke Keranjang';
-        });
-    });
-</script>
-@endpush
-
-<style>
-    .thumbnail-box {
-        transition: all 0.2s;
-        border: 2px solid transparent !important;
-    }
-    .thumbnail-box:hover {
-        border-color: #ddd !important;
-    }
-    .active-thumbnail {
-        border-color: #dc3545 !important;
-    }
-    .cursor-pointer {
-        cursor: pointer;
-    }
-</style>
-
-@push('scripts')
-<script>
-    // 1. Fungsi Ganti Gambar Detail Utama
-    function changeMainImage(imageSrc, element) {
-        const mainImg = document.getElementById('mainProductImage');
-        if (mainImg) {
-            mainImg.src = imageSrc;
-        }
-        document.querySelectorAll('.thumbnail-box').forEach(box => {
-            box.classList.remove('active-thumbnail');
-        });
-        if (element) {
-            element.classList.add('active-thumbnail');
-        }
-    }
-
-    // 2. Fungsi Tombol Plus Minus Kuantitas (Maksimal sesuai stok database)
-    function changeQuantity(delta) {
-        const qtyInput = document.getElementById('display-qty');
-        if (!qtyInput) return;
-        
-        const maxStok = parseInt(qtyInput.getAttribute('max')) || 0;
-        let currentQty = parseInt(qtyInput.value) || 1;
-        let newQty = currentQty + delta;
-        
-        if (newQty >= 1 && newQty <= maxStok) {
-            qtyInput.value = newQty;
-        }
-    }
-
-    // 3. Aksi Submit AJAX Kirim Data JSON Bersih
-    document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const addToCartBtn = document.getElementById('addToCartBtn');
-        const productId = this.querySelector('input[name="product_id"]').value;
-        const qtyValue = parseInt(document.getElementById('display-qty').value) || 1;
-        
-        const tokenMeta = document.querySelector('meta[name="csrf-token"]');
-        const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : '';
-
-        if (!csrfToken) {
-            alert('Token keamanan kadaluwarsa. Silakan refresh halaman (F5) terlebih dahulu!');
-            return;
-        }
-
-        // Kunci tombol saat memproses kiriman
-        addToCartBtn.disabled = true;
-        addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
-
-        fetch("{{ route('cart.add') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken,
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({
-                product_id: productId,
-                kuantitas: qtyValue  // Dikirim dengan nama variabel kuantitas murni
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => { throw err; });
-            }
-            return response.json();
-        })
-.then(data => {
-            if (data.success) {
-                alert(data.message);
-                
-                // Beri tahu navbar layouts/app untuk update angka badge live
                 window.dispatchEvent(new CustomEvent('cartUpdated', { 
                     detail: { count: data.cart_count } 
                 }));
-                
-                // FIX UNTUK GAMBAR 2: Setelah sukses masuk keranjang via AJAX, pembeli langsung dilempar ke halaman pembayaran!
                 window.location.href = "{{ route('checkout.index') }}";
             } else {
                 alert(data.message || 'Gagal menambahkan produk ke keranjang.');
             }
         })
         .catch(error => {
-            console.error('Error dari Laravel:', error);
-            alert('Terjadi kesalahan sistem server saat menyimpan data. Pastikan status login kamu masih aktif ya!');
+            console.error('Detail Error Semula:', error);
+            
+            if (error.message === 'AUTH_EXPIRED') {
+                alert('Sesi login Anda telah habis atau Anda belum masuk akun. Anda akan dialihkan ke halaman Login.');
+                window.location.href = "{{ route('login') }}";
+            } else {
+                // Di sini alert akan memunculkan pesan error gamblang dari server Laravel kamu!
+                alert('Pesan asli dari Server: ' + error.message);
+            }
         })
         .finally(() => {
-            // Lepas kunci tombol setelah selesai proses
             addToCartBtn.disabled = false;
             addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Tambah ke Keranjang';
         });

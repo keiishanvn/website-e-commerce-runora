@@ -21,9 +21,18 @@ class CartController extends Controller
         return view('cart', compact('carts')); 
     }
 
-    // 2. Tambah ke Keranjang (Murni AJAX JSON - Tanpa Ukuran)
+// 2. Tambah ke Keranjang (Murni AJAX JSON - Tanpa Ukuran)
     public function store(Request $request)
     {
+        // 1. Cek status login user secara manual untuk kebutuhan AJAX
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'AUTH_EXPIRED'
+            ], 401);
+        }
+
+        // 2. Validasi inputan request
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'kuantitas'  => 'required|integer|min:1',
@@ -31,7 +40,7 @@ class CartController extends Controller
 
         $userId = Auth::id();
 
-        // Cek apakah produk ini sudah ada di keranjang user
+        // 3. Cek apakah produk ini sudah ada di keranjang user
         $cart = Cart::where('user_id', $userId)
                     ->where('product_id', $request->product_id)
                     ->first();
@@ -48,9 +57,10 @@ class CartController extends Controller
             ]);
         }
 
-        // Hitung total item unik untuk update badge navbar
+        // 4. Hitung total item unik untuk update badge navbar
         $cartCount = Cart::where('user_id', $userId)->count();
 
+        // 5. Kembalikan response JSON sukses
         return response()->json([
             'success' => true,
             'message' => 'Produk berhasil masuk keranjang belanja RUNORA!',
