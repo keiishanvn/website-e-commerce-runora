@@ -9,9 +9,8 @@ return new class extends Migration {
     {
         Schema::create('product_images', function (Blueprint $table) {
             $table->id();
-            // Menghubungkan id produk ke tabel products asli
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->string('gambar_detail'); // Kolom penyimpan nama berkas foto tambahan
+            $table->string('gambar_detail'); 
             $table->timestamps();
         });
     }

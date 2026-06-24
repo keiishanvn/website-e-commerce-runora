@@ -9,10 +9,10 @@ class ProductImage extends Model
 {
     use HasFactory;
 
-    protected $table = 'product_images'; // Menegaskan nama tabelnya
+    protected $table = 'product_images';
 
     protected $fillable = [
         'product_id',
-        'gambar_detail' // <─── WAJIB ADA BIAR MULTIPLE GAMBAR DETAIL LOLOS
+        'gambar_detail' 
     ];
 }

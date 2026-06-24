@@ -11,7 +11,6 @@ class Cart extends Model
 
     protected $table = 'carts';
 
-    // Kolom yang diizinkan diisi massal (Size dibuang)
     protected $fillable = [
         'user_id', 
         'product_id', 

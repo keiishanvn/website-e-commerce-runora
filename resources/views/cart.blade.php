@@ -3,10 +3,7 @@
 @section('title', 'Keranjang Belanja')
 
 @section('content')
-{{-- Bootstrap Utilities & Grid System Container --}}
 <div class="container py-5" style="max-width: 960px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-
-    {{-- Judul Halaman Sesuai Gambar --}}
     <h2 class="fw-bold text-dark mb-4 text-uppercase tracking-wider fs-3">KERANJANG BELANJA</h2>
 
     @if (session('success'))
@@ -26,11 +23,9 @@
         <form action="{{ route('cart.checkout') }}" method="POST" id="cart-form">
             @csrf
 
-            {{-- Struktur Tabel Utama dengan Class Bootstrap 5 Resmi --}}
             <div class="table-responsive mb-4">
                 <table class="table align-middle border-0 m-0" id="cart-table">
 
-                    {{-- Header Berwarna Merah Red-700 Sesuai Gambar --}}
                     <thead>
                         <tr class="text-white align-middle" style="background-color: #b91c1c; font-size: 0.95rem;">
                             <th class="px-4 py-3 fw-semibold border-0 rounded-start" style="width: 35%;">Produk</th>
@@ -42,12 +37,12 @@
                         </tr>
                     </thead>
 
-                    {{-- Isi Daftar Produk --}}
+                    // Isi Daftar Produk
                     <tbody class="border-0">
                         @foreach ($carts as $cart)
                         <tr class="border-bottom border-2 border-light row-cart-item" id="product-row-{{ $cart->id }}">
 
-                            {{-- Komponen Gambar + Detail Produk --}}
+                            // Komponen Gambar + Detail Produk
                             <td class="py-4 px-3">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="border border-secondary-subtle rounded-3 p-1 bg-white flex-shrink-0 d-flex align-items-center justify-content-center" 
@@ -63,16 +58,16 @@
                                 </div>
                             </td>
 
-                            {{-- Harga Satuan --}}
+                            // Harga Satuan
                             <td class="py-4 px-3 text-center fw-semibold text-secondary-dark fs-6 whitespace-nowrap">
                                 Rp. {{ number_format($cart->product->harga, 0, ',', '.') }}
                             </td>
 
-                            {{-- Tombol Plus Minus Kotak Abu Sesuai Gambar --}}
+                            // Tombol Plus Minus Kotak Abu Sesuai Gambar
                             <td class="py-4 px-3">
                                 <div class="d-flex justify-content-center">
                                     <div class="input-group input-group-sm border border-secondary rounded overflow-hidden bg-light" style="width: 90px;">
-                                        {{-- Tombol Minus Terbuka Aksesnya Tanpa Atribut Pembatas Min Kaku --}}
+                                        // Tombol Minus Terbuka Aksesnya Tanpa Atribut Pembatas Min Kaku
                                         <button class="btn btn-link text-decoration-none text-dark fw-bold px-2 py-0 bg-secondary-subtle border-end border-secondary" 
                                                 type="button" onclick="updateQty({{ $cart->id }}, -1)">-</button>
                                         
@@ -85,12 +80,12 @@
                                 </div>
                             </td>
 
-                            {{-- Hitungan Subtotal Dinamis Riil --}}
+                            // Hitungan Subtotal Dinamis Riil
                             <td class="py-4 px-3 text-center fw-bold text-dark fs-6 whitespace-nowrap" id="subtotal-{{ $cart->id }}">
                                 Rp. {{ number_format($cart->product->harga * $cart->kuantitas, 0, ',', '.') }}
                             </td>
 
-                            {{-- Kotak Checkbox Centang Tebal --}}
+                            // Kotak Checkbox Centang Tebal
                             <td class="py-4 px-3 text-center">
                                 <div class="d-flex justify-content-center align-items-center">
                                     <input type="checkbox" name="selected[]" value="{{ $cart->id }}" 
@@ -101,7 +96,7 @@
                                 </div>
                             </td>
 
-                            {{-- AKSI BARU: Tombol Hapus Sampah Langsung Dari Baris Tabel --}}
+                            // AKSI BARU: Tombol Hapus Sampah Langsung Dari Baris Tabel
                             <td class="py-4 px-3 text-center">
                                 <button type="button" class="btn btn-link text-danger p-0" onclick="confirmDeleteRow({{ $cart->id }})">
                                     <i class="fas fa-trash-alt fs-5"></i>
@@ -117,7 +112,7 @@
 
             <hr class="text-secondary-subtle border-1 my-4">
 
-            {{-- Ringkasan Grand Total & Tombol Navigasi --}}
+            // Ringkasan Grand Total & Tombol Navigasi
             <div id="cart-summary-area" class="d-flex flex-column align-items-end gap-3 mt-3 w-100 pe-2">
                 <div class="d-flex align-items-center" style="gap: 60px;">
                     <span class="fw-bold text-dark fs-5">Total:</span>
@@ -145,7 +140,7 @@
 <script>
     const prices = {};
 
-    // 1. Ambil data peta checkbox acuan saat pertama kali halaman dibuka
+    // 1. Ambil data peta checkbox acuan pas pertama kali halaman dibuka
     document.querySelectorAll('.cart-checkbox').forEach(cb => {
         prices[cb.value] = {
             price: parseInt(cb.dataset.price) || 0,
@@ -178,7 +173,7 @@
         }
     }
 
-    // 3. Fungsi plus minus kuantitas sinkron database via AJAX Fetch (REVISI LOGIKA MINUS HALO DELETE)
+    // 3. Fungsi plus minus kuantitas sinkron database 
     function updateQty(cartId, delta) {
         const input = document.getElementById('qty-' + cartId);
         if (!input) return;
@@ -219,7 +214,7 @@
         updateTotal();
     }
 
-    // 4. JALUR BARU: Pemicu Munculnya Pop-Up Konfirmasi Penghapusan Item Keranjang
+    // 4. Pop-Up Konfirmasi Penghapusan Item Keranjang
     function confirmDeleteRow(cartId) {
         const confirmAction = confirm("Apakah kamu yakin ingin menghapus produk ini dari keranjang belanja RUNORA?");
         
@@ -251,7 +246,7 @@
         }
     }
 
-    // Fungsi Pembantu: Mengubah tampilan halaman jika isi keranjang telah kosong pasca dihapus
+    // Ngubah tampilan halaman jika isi keranjang telah kosong pasca dihapus
     function checkEmptyCartState() {
         const remainingRows = document.querySelectorAll('.row-cart-item');
         if (remainingRows.length === 0) {

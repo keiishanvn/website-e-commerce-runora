@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('metode_pembayaran');
             $table->string('nama_penerima');
             $table->text('alamat_pengiriman');
-            $table->string('status')->default('Diproses'); // Pilihan: Diproses, Dikirim, Selesai
+            $table->string('status')->default('Diproses'); 
             $table->timestamps();
         });
 

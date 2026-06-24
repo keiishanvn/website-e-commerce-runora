@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-
-    // Taktik Penyelamat: Daftarkan semua kolom database kamu di sini!
     protected $fillable = [
         'name',
         'kategori',
@@ -17,6 +15,6 @@ class Product extends Model
         'harga',
         'diskon',
         'stok',
-        'gambar' // <─── WAJIB ADA BIAR GAMBAR UTAMA GA DI-BLOKIR LARAVEL
+        'gambar' 
     ];
 }

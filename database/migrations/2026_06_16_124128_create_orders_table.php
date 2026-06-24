@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('no_hp');
             $table->string('notes')->nullable();
             
-            $table->timestamps(); // Otomatis membuat created_at dan updated_at
+            $table->timestamps(); 
         });
     }
 

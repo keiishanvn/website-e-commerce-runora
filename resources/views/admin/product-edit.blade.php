@@ -4,7 +4,7 @@
 
 @section('content')
 
-{{-- ── 1. HEADER HALAMAN ── --}}
+// 1. HEADER HALAMAN 
 <div class="mb-8">
     <a href="{{ route('admin.produk.index') }}" class="text-sm font-bold text-[#C81010] hover:underline mb-2 inline-block">
         <i class="fas fa-arrow-left mr-2"></i> Kembali ke Data Produk
@@ -14,7 +14,7 @@
     <p class="text-gray-500">Edit detail informasi produk Anda di bawah ini.</p>
 </div>
 
-{{-- ── 2. ALERT EROR VALIDASI ── --}}
+// 2. ALERT EROR VALIDASI 
 @if ($errors->any())
     <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl">
         <ul class="list-disc pl-5 text-sm">
@@ -25,7 +25,7 @@
     </div>
 @endif
 
-{{-- ── 3. FORM EDIT PRODUK ── --}}
+// 3. FORM EDIT PRODUK 
 <form action="{{ route('admin.produk.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
     @csrf 
     @method('PUT')
@@ -128,7 +128,7 @@
     </div>
 </form>
 
-{{-- ── 4. MODAL KONFIRMASI BATAL ── --}}
+// 4. MODAL KONFIRMASI BATAL 
 <div id="confirmModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-6 w-80 text-center shadow-xl">
         <h2 class="text-lg font-bold mb-2">Yakin mau batal?</h2>

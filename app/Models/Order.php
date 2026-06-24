@@ -9,7 +9,6 @@ class Order extends Model
 {
     use HasFactory;
 
-    // Menjaga agar mapping data tetap aman ke kolom tabel kelompokmu
     protected $guarded = ['id'];
 
     public function items()

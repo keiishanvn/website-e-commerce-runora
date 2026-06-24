@@ -4,14 +4,11 @@
 
 @section('content')
 <div class="container-fluid px-0" style="font-family: 'Inter', -apple-system, sans-serif;">
-    
-    {{-- FIX KUNCI TINGGI LAYAR: Memastikan sidebar & konten memanjang penuh serasi --}}
     <div class="row g-0 d-flex align-items-stretch" style="min-height: calc(100vh - 70px);">
         
-        {{-- ── 1. SIDEBAR KIRI (TEMBUS MENTOK KE FOOTER) ── --}}
+        // 1. SIDEBAR KIRI 
         <div class="col-md-3 bg-white d-flex flex-column justify-content-between shadow-sm" style="max-width: 280px; border-right: 4px solid #dee2e6 !important;">
             <div>
-                {{-- Area Banner Profil Pengguna (Merah Penuh) --}}
                 <div class="d-flex align-items-center gap-3 px-4 py-4" style="background-color: #b91c1c;">
                     <div class="rounded-circle bg-white d-flex align-items-center justify-content-center overflow-hidden" style="width: 55px; height: 55px; flex-shrink: 0;">
                         <i class="fas fa-user text-dark fs-3"></i>
@@ -22,21 +19,17 @@
                     </div>
                 </div>
 
-                {{-- Daftar Menu Navigasi Vertikal --}}
+                // Navigasi Menu Vertikal
                 <div class="nav flex-column border-bottom border-secondary-subtle">
-                    {{-- Menu Riwayat Pesanan (Status Pasif) --}}
                     <a href="{{ route('riwayat.pesanan') }}" class="nav-link text-dark fw-bold px-4 py-3 d-flex align-items-center gap-3 text-decoration-none border-bottom border-secondary-subtle bg-white btn-menu-pasif" style="font-size: 0.85rem;">
                         <i class="fas fa-history fs-5"></i> Riwayat Pesanan
                     </a>
-                
-                    {{-- Menu Pengaturan Akun (Status Aktif) --}}
                     <a href="{{ route('user.settings') }}" class="nav-link text-dark fw-bold px-4 py-3 d-flex align-items-center gap-3 text-decoration-none bg-light" style="font-size: 0.85rem;">
                         <i class="far fa-user fs-5"></i> Pengaturan Akun
                     </a>
                 </div>
             </div>
 
-            {{-- Tombol Keluar: Berada di paling bawah sidebar --}}
             <div class="px-4 py-4 my-4">
                 <form action="{{ route('logout') }}" method="POST" class="w-100">
                     @csrf
@@ -47,7 +40,7 @@
             </div>
         </div>
 
-        {{-- ── 2. KONTEN SEBELAH KANAN: FORM ISIAN & CARD INFORMASI (SINKRONISASI LAYOUT) ── --}}
+        // 2. KONTEN KANAN: FORM PENGATURAN AKUN
         <div class="col-md-9 flex-grow-1 bg-white px-5 py-5">
             
             <h2 class="fw-black text-dark text-uppercase tracking-tight mb-5 fs-4" style="letter-spacing: 0.3px;">PENGATURAN AKUN</h2>
@@ -59,7 +52,7 @@
             @endif
 
             <div class="row g-4">
-                {{-- SEKTOR KIRI: FORM PENGATURAN PROFIL --}}
+                // SEKTOR KIRI: FORM PENGATURAN PROFIL
                 <div class="col-lg-7">
                     <form action="{{ route('user.settings.update') }}" method="POST">
                         @csrf
@@ -93,9 +86,9 @@
                     </form>
                 </div>
 
-                {{-- SEKTOR KANAN: MENGISI AREA KOSONG DENGAN CARD INFORMASI --}}
+                // SEKTOR KANAN: MENGISI AREA KOSONG DENGAN CARD INFORMASI
                 <div class="col-lg-5 ps-lg-4">
-                    {{-- Card 1: Status Keamanan Akun --}}
+                    // Card 1: Status Keamanan Akun
                     <div class="card border-0 bg-light rounded-4 p-4 mb-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="bg-danger text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
@@ -111,7 +104,7 @@
                         </span>
                     </div>
 
-                    {{-- Card 2: Log Informasi Sesi Pengguna --}}
+                    // Card 2: Log Informasi Sesi Pengguna
                     <div class="card border-0 bg-light rounded-4 p-4 shadow-sm">
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="bg-dark text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">

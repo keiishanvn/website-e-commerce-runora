@@ -5,7 +5,7 @@
 @section('content')
 <div class="px-6 py-6">
 
-    {{-- Header --}}
+    // Header
     <div class="flex items-start justify-between mb-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-900 tracking-tight">DISTRIBUSI PRODUK</h2>
@@ -16,10 +16,10 @@
         </button>
     </div>
 
-    {{-- Stat Cards --}}
+    // Stat Cards 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
-        {{-- Total Distribusi --}}
+        // Total Distribusi 
         <div class="bg-white rounded-2xl p-5 shadow-sm">
             <div class="flex items-start justify-between mb-3">
                 <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-xl">
@@ -31,7 +31,7 @@
             <p class="text-3xl font-bold text-gray-900 mt-1">48</p>
         </div>
 
-        {{-- Sedang Diproses --}}
+        // Sedang Diproses
         <div class="bg-white rounded-2xl p-5 shadow-sm">
             <div class="w-12 h-12 rounded-xl bg-yellow-50 text-yellow-500 flex items-center justify-center text-xl mb-3">
                 <i class="far fa-clock"></i>
@@ -40,7 +40,7 @@
             <p class="text-3xl font-bold text-gray-900 mt-1">12</p>
         </div>
 
-        {{-- Terkirim --}}
+        // Terkirim
         <div class="bg-white rounded-2xl p-5 shadow-sm">
             <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl mb-3">
                 <i class="far fa-check-circle"></i>
@@ -49,7 +49,7 @@
             <p class="text-3xl font-bold text-gray-900 mt-1">30</p>
         </div>
 
-        {{-- Kendala --}}
+        // Kendala
         <div class="bg-white rounded-2xl p-5 shadow-sm">
             <div class="w-12 h-12 rounded-xl bg-red-50 text-red-400 flex items-center justify-center text-xl mb-3">
                 <i class="fas fa-times-circle"></i>
@@ -60,16 +60,16 @@
 
     </div>
 
-    {{-- Table --}}
+    // Table
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
 
-        {{-- Table Header --}}
+        // Table Header
         <div class="bg-red-800 px-6 py-4">
             <p class="text-white font-bold text-lg leading-tight">Data Distribusi</p>
             <p class="text-red-200 text-xs mt-0.5">Riwayat pengiriman produk olahraga lari</p>
         </div>
 
-        {{-- Table --}}
+        // Table
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>

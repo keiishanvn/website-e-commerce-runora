@@ -4,15 +4,11 @@
 
 @section('content')
 <div class="container-fluid px-0 mb-0" style="font-family: 'Inter', -apple-system, sans-serif;">
-    
-    {{-- FIX KUNCI TINGGI LAYAR: Ditambahkan min-height agar otomatis memanjang ke bawah menempel ke footer --}}
     <div class="row g-0 d-flex align-items-stretch" style="min-height: calc(100vh - 70px); opacity: 1;">
-        
-        {{-- ── 1. SIDEBAR KIRI (TEMBUS MENTOK KE FOOTER) ── --}}
         <div class="col-md-3 bg-white d-flex flex-column justify-content-between shadow-sm" 
              style="max-width: 280px; border-right: 4px solid #dee2e6 !important;">
             <div>
-                {{-- Area Banner Profil Pengguna (Merah Penuh) --}}
+
                 <div class="d-flex align-items-center gap-3 px-4 py-4" style="background-color: #b91c1c;">
                     <div class="rounded-circle bg-white d-flex align-items-center justify-content-center overflow-hidden" style="width: 55px; height: 55px; flex-shrink: 0;">
                         <i class="fas fa-user text-dark fs-3"></i>
@@ -23,21 +19,17 @@
                     </div>
                 </div>
 
-                {{-- Daftar Menu Navigasi Vertikal dengan Garis Potong Tipis --}}
+                // Navigasi Menu Vertikal
                 <div class="nav flex-column border-bottom border-secondary-subtle">
-                    {{-- Menu Riwayat Pesanan (Status Aktif) --}}
                     <a href="{{ route('riwayat.pesanan') }}" class="nav-link text-dark fw-bold px-4 py-3 d-flex align-items-center gap-3 text-decoration-none border-bottom border-secondary-subtle bg-light" style="font-size: 0.85rem;">
                         <i class="fas fa-history fs-5"></i> Riwayat Pesanan
                     </a>
-                    
-                    {{-- Menu Pengaturan Akun (Status Pasif) --}}
                     <a href="{{ route('user.settings') }}" class="nav-link text-dark fw-bold px-4 py-3 d-flex align-items-center gap-3 text-decoration-none bg-white btn-menu-pasif" style="font-size: 0.85rem;">
                         <i class="far fa-user fs-5"></i> Pengaturan Akun
                     </a>
                 </div>
             </div>
 
-            {{-- Tombol Keluar: Menyesuaikan jarak ngapung statis yang aman --}}
             <div class="px-4 py-4 my-4 d-flex justify-content-start">
                 <form action="{{ route('logout') }}" method="POST" class="w-auto">
                     @csrf
@@ -48,13 +40,13 @@
             </div>
         </div>
 
-        {{-- ── 2. KONTEN SEBELAH KANAN: TABEL DATA RIWAYAT PESANAN ── --}}
+        //2. KONTEN SEBELAH KANAN: TABEL DATA RIWAYAT PESANAN 
         <div class="col-md-9 flex-grow-1 bg-white px-5 py-5">
             
-            {{-- Judul Halaman --}}
+            // Judul Halaman 
             <h2 class="fw-black text-dark text-uppercase tracking-tight mb-5 fs-4" style="letter-spacing: 0.3px;">RIWAYAT PESANAN</h2>
 
-            {{-- Struktur Tabel Minimalis --}}
+            // Struktur Tabel Minimalis
             <div class="table-responsive">
                 <table class="table align-middle border-0 table-hover m-0">
                     

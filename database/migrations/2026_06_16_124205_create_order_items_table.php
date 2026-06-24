@@ -14,7 +14,7 @@ return new class extends Migration
         $table->foreignId('product_id')->constrained()->onDelete('cascade');
         $table->integer('kuantitas');
         $table->string('ukuran', 10)->nullable();
-        $table->decimal('harga', 12, 2); // Harga satuan produk
+        $table->decimal('harga', 12, 2); 
         $table->timestamps();
     });
     }

@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
-    /**
-     * 1. MENAMPILKAN DAFTAR PRODUK (DENGAN FILTER & PENCARIAN)
-     */
+    // 1. MENAMPILKAN DAFTAR PRODUK (DENGAN FILTER & PENCARIAN)
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -19,8 +17,6 @@ class AdminProductController extends Controller
         $urutkan = $request->input('urutkan');
 
         $query = DB::table('products');
-
-        // FIX: Sesuaikan pencarian murni ke kolom 'name' sesuai migrasi database asli
         if ($search) {
             $query->where('name', 'LIKE', '%' . $search . '%');
         }
@@ -42,21 +38,16 @@ class AdminProductController extends Controller
         return view('admin.products', compact('products', 'search', 'kategori', 'urutkan'));
     }
 
-    /**
-     * 2. MENAMPILKAN HALAMAN FORM TAMBAH PRODUK BARU
-     */
+    // 2. MENAMPILKAN HALAMAN FORM TAMBAH PRODUK BARU
     public function create()
     {
         return view('admin.product-create');
     }
 
-    /**
-     * 3. MEMPROSES PENYIMPANAN DATA PRODUK BARU + UPLOAD GAMBAR
-     */
+    // 3. MEMPROSES PENYIMPANAN DATA PRODUK BARU + UPLOAD GAMBAR
     public function store(Request $request)
     {
 
-        // Validasi dibuat longgar untuk menghindari bug format upload lokal
         $request->validate([
             'nama'      => 'nullable|string|max:255',
             'name'      => 'nullable|string|max:255', 
@@ -71,12 +62,10 @@ class AdminProductController extends Controller
 
         $namaHeroImage = null;
 
-        // FIX: Kita pastikan file dipindahkan ke folder public lokal secara absolut
 if ($request->hasFile('gambar') && $request->file('gambar')->isValid()) {
             $file = $request->file('gambar');
             $namaHeroImage = time() . '_hero_' . str_replace(' ', '_', $file->getClientOriginalName());
-            
-            // FIX: Ganti public_path dengan perintah dasar PHP 'base_path'
+
             $file->move(base_path('public/products'), $namaHeroImage);
         }
 
@@ -116,9 +105,7 @@ if ($request->hasFile('gambar') && $request->file('gambar')->isValid()) {
         return redirect()->route('admin.produk.index')->with('success', 'Produk baru berhasil ditambahkan ke dalam katalog toko!');
     }
 
-    /**
-     * 5. MENGHAPUS PRODUK + MEMBERSIHKAN FILE GAMBAR LAMA
-     */
+    // 5. MENGHAPUS PRODUK + MEMBERSIHKAN FILE GAMBAR LAMA
     public function destroy($id)
     {
         $product = DB::table('products')->where('id', $id)->first();
@@ -138,9 +125,7 @@ if ($request->hasFile('gambar') && $request->file('gambar')->isValid()) {
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dihapus dari katalog toko!');
     }
 
-    /**
-     * 6. MENAMPILKAN FORM EDIT PRODUK DENGAN DATA LAMA
-     */
+    // 6. MENAMPILKAN FORM EDIT PRODUK DENGAN DATA LAMA
     public function edit($id)
     {
         $product = DB::table('products')->where('id', $id)->first();
@@ -152,9 +137,7 @@ if ($request->hasFile('gambar') && $request->file('gambar')->isValid()) {
         return view('admin.product-edit', compact('product'));
     }
 
-    /**
-     * 7. MEMPROSES UPDATE DATA PRODUK KE DATABASE
-     */
+    // 7. MEMPROSES UPDATE DATA PRODUK KE DATABASE
     public function update(Request $request, $id)
     {
         $request->validate([

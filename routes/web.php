@@ -66,9 +66,7 @@ Route::middleware('auth')->group(function () {
 }); 
 
 
-// ========================================================
-// ROUTE GROUP KHUSUS ADMIN (RUNORA MANAGEMENT)
-// ========================================================
+// ROUTE GROUP KHUSUS ADMIN
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     
     // Halaman Utama Dashboard Admin

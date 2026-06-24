@@ -73,7 +73,7 @@
                 <input type="number" name="stok" value="{{ old('stok') }}" required placeholder="0" class="w-full border border-gray-200 p-3.5 rounded-xl outline-none focus:ring-2 focus:ring-[#C81010]/20">
             </div>
 
-            {{-- REVISI BESAR: SEKTOR MEDIA PRODUK --}}
+            // MEDIA PRODUK
             <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
                 <h2 class="text-lg font-bold border-b pb-2">MEDIA PRODUK</h2>
                 
@@ -137,7 +137,7 @@ function closeModal(){
     document.getElementById('confirmModal').classList.remove('flex');
 }
 
-// JAVASCRIPT LIVE PREVIEW GAMBAR UTAMA
+// LIVE PREVIEW GAMBAR UTAMA
 document.getElementById('heroInput').addEventListener('change', function(e) {
     const previewDiv = document.getElementById('heroPreview');
     const img = previewDiv.querySelector('img');
@@ -149,7 +149,7 @@ document.getElementById('heroInput').addEventListener('change', function(e) {
     }
 });
 
-// JAVASCRIPT LIVE PREVIEW MULTIPLE GAMBAR DETAIL
+// LIVE PREVIEW MULTIPLE GAMBAR DETAIL
 document.getElementById('detailInput').addEventListener('change', function(e) {
     const container = document.getElementById('detailPreviewContainer');
     container.innerHTML = ''; // Reset preview lama

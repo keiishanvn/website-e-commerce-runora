@@ -21,7 +21,7 @@ class CartController extends Controller
         return view('cart', compact('carts')); 
     }
 
-// 2. Tambah ke Keranjang (Murni AJAX JSON - Tanpa Ukuran)
+// 2. Tambah ke Keranjang
     public function store(Request $request)
     {
         // 1. Cek status login user secara manual untuk kebutuhan AJAX
@@ -149,14 +149,11 @@ class CartController extends Controller
         return redirect()->route('checkout.index');
     }
 
-    // 8. REVOLUSI FINAL: Sinkron total dengan struktur tabel runora_db.orders milik tim kelompokmu
     public function process(Request $request)
     {
         try {
-            // Tangkap semua inputan baik berupa JSON Fetch maupun Form Request Biasa
             $input = $request->isJson() ? $request->json()->all() : $request->all();
 
-            // SINKRONISASI KOLOM FIGMA KELOMPOKMU
             $metodePembayaran = $input['metode_pembayaran'] ?? 'transfer_bank';
             $alamatPengiriman = !empty($input['alamat_pengiriman']) ? $input['alamat_pengiriman'] : 'Alamat Pengguna RUNORA';
             $noHp             = !empty($input['no_hp']) ? $input['no_hp'] : '08123456789';
@@ -167,7 +164,7 @@ class CartController extends Controller
             $itemsToProcess = [];
             $cartIdsToDelete = [];
 
-            // ── JALUR A: KITA CEK LEWAT DATABASE UTAMA (CHECKOUT DARI KERANJANG) ──
+            // CEK LEWAT DATABASE UTAMA (CHECKOUT DARI KERANJANG) 
             if (!empty($cartIds)) {
                 $cleanCartIds = array_map('intval', $cartIds);
                 $cartItems = Cart::with('product')->whereIn('id', $cleanCartIds)->where('user_id', $userId)->get();
@@ -185,7 +182,7 @@ class CartController extends Controller
                 }
             }
 
-            // ── JALUR B: JALUR BACKUP (JIKA BELI SEKARANG / DATABASE KOSONG) ──
+            // JALUR BACKUP (JIKA BELI SEKARANG / DATABASE KOSONG) 
             if (empty($itemsToProcess)) {
                 $sessionItems = session('checkout_items', []);
                 
@@ -218,10 +215,9 @@ class CartController extends Controller
                 ], 400);
             }
 
-            // Bikin Nomor Invoice Unik Kreatif Kombinasi Waktu Riil + Angka Acak
+            // Bikin Nomor Invoice 
             $uniqueInvoice = 'RUNORA-' . date('YmdHis') . '-' . rand(1000, 9999);
 
-            // 🌟 A. INJECT MAP PERMINTAAN KOLOM SAMA PERSIS DENGAN MySQL TIM KELOMPOKMU (FIXED)
             $order = Order::create([
                 'user_id'        => $userId,
                 'invoice_number' => $uniqueInvoice,
@@ -232,7 +228,6 @@ class CartController extends Controller
                 'notes'          => '-', 
             ]);
 
-            // B. INJECT MASUK KE TABEL DETAIL (ORDER_ITEMS)
             foreach ($itemsToProcess as $item) {
                 OrderItem::create([
                     'order_id'     => $order->id,
@@ -242,15 +237,11 @@ class CartController extends Controller
                 ]);
             }
 
-            // C. HAPUS DATA ITEM TERBELI DARI TABEL KERANJANG (CARTS) JIKA ADA
             if (!empty($cartIdsToDelete)) {
                 Cart::whereIn('id', $cartIdsToDelete)->where('user_id', $userId)->delete();
             }
-
-            // D. BERSIHKAN TOTAL SESSION CHECKOUT BROWSER
             session()->forget('checkout_items');
 
-            // KIRIM BALASAN SUKSES KE AJAX JAVASCRIPT
             return response()->json([
                 'success' => true,
                 'message' => 'Transaksi sukses dicatat ke database!'
@@ -264,7 +255,7 @@ class CartController extends Controller
         }
     }
 
-    // 9. KONEKSI DATA NYATA: Menampilkan halaman riwayat dari database asli kelompokmu
+    // 9. KONEKSI DATA NYATA: Menampilkan halaman riwayat dari database asli 
     public function riwayatIndex()
     {
         $orders = Order::where('user_id', Auth::id())
@@ -274,13 +265,13 @@ class CartController extends Controller
         return view('riwayat', compact('orders'));
     }
 
-    // 10. FUNGSI BARU: Menampilkan Halaman Pengaturan Akun
+    // 10. Menampilkan Halaman Pengaturan Akun
     public function settingsIndex()
     {
         return view('settings');
     }
 
-    // 11. FUNGSI BARU: Memproses Update Data Profil Pengguna
+    // 11. Memproses Update Data Profil Pengguna
     public function settingsUpdate(Request $request)
     {
         $user = Auth::user();

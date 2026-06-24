@@ -3,28 +3,23 @@
 @section('title', 'Pembayaran')
 
 @section('content')
-{{-- SweetAlert2 CDN untuk Pop-up Notifikasi Sukses --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="container py-4" style="max-width: 1040px; font-family: 'Inter', -apple-system, sans-serif;">
-
-    {{-- Tombol Kembali Tipis Sesuai Desain Figma --}}
     <div class="mb-4">
         <a href="{{ url()->previous() }}" class="text-dark text-decoration-none fs-4">
             <i class="fas fa-arrow-left"></i>
         </a>
     </div>
-
-    {{-- Judul Besar Halaman --}}
     <h2 class="fw-black text-dark mb-4 tracking-tight fs-3 text-uppercase">PEMBAYARAN</h2>
 
-    {{-- Form Checkout Utama --}}
+    // Formulir Checkout Utama
     <form action="{{ route('checkout.process') }}" method="POST" id="main-payment-form">
         @csrf
 
         <div class="row g-4 items-start">
 
-            {{-- ── SEKTOR KIRI: INFORMASI PEMBAYARAN & DAFTAR ITEM BELANJA ── --}}
+            // ── SEKTOR KIRI: INFORMASI PEMBAYARAN & DAFTAR ITEM BELANJA ──
             <div class="col-lg-7">
                 <h3 class="fw-bold text-dark fs-5 mb-3">Informasi Pembayaran</h3>
 
@@ -84,7 +79,7 @@
                         @endforeach
                     </div>
 
-                    {{-- Pilihan Metode Pembayaran --}}
+                    // Pilihan Metode Pembayaran
                     <div class="card-body px-4 py-3 bg-white border-top border-light-subtle">
                         <p class="fw-bold text-dark mb-3" style="font-size: 0.85rem; letter-spacing: 0.3px;">Metode Pembayaran</p>
                         <div class="d-flex flex-column gap-3">
@@ -116,7 +111,7 @@
                 </div>
             </div>
 
-            {{-- ── SEKTOR KANAN: RINGKASAN PESANAN & ALAMAT PENGIRIMAN ── --}}
+            // SEKTOR KANAN: RINGKASAN PESANAN & ALAMAT PENGIRIMAN 
             <div class="col-lg-5">
                 <h3 class="fw-bold text-dark fs-5 mb-0">Ringkasan Pesanan</h3>
                 <p class="text-muted mb-3" style="font-size: 0.75rem;">Dijual dan dikirim oleh <span class="fw-bold text-secondary-dark">RUNORA</span></p>
@@ -149,7 +144,7 @@
                 </div>
             </div>
 
-            {{-- Button Checkout Utama --}}
+            // Button Checkout Utama
             <div class="col-12 mt-4">
                 <button type="submit" id="btn-submit-checkout" class="btn btn-white border border-danger text-danger w-100 py-3 rounded-2 fw-bold tracking-widest text-uppercase shadow-sm fs-6 btn-checkout-runora">
                     CHECKOUT
@@ -159,7 +154,7 @@
     </form>
 </div>
 
-{{-- Modal Edit Alamat --}}
+// Modal Edit Alamat 
 <div class="modal fade" id="editAlamatModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
         <div class="modal-content border-0 rounded-3 shadow-lg px-3 py-2">
@@ -228,7 +223,6 @@
     .text-xs { font-size: 0.75rem !important; }
 </style>
 
-{{-- SCRIPT AJAX MURNI ANTI-BENCOK & ANTI-REFRESH FIGMA LAYOUT --}}
 @push('scripts')
 <script>
     // Handler Modal Edit Alamat
@@ -257,9 +251,9 @@
         bootstrap.Modal.getInstance(document.getElementById('editAlamatModal')).hide();
     });
 
-    // SISTEM BARU: Kirim form via AJAX Fetch (Mencegah Kehilangan Session & Bug Refresh)
+    // Kirim form (Mencegah Kehilangan Session & Bug Refresh)
     document.getElementById('main-payment-form').addEventListener('submit', function(e) {
-        e.preventDefault(); // Matikan paksa submit bawaan HTML browser
+        e.preventDefault(); 
 
         const btnCheckout = document.getElementById('btn-submit-checkout');
         btnCheckout.disabled = true;
@@ -290,7 +284,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Tampilkan pop-up SweetAlert2 HANYA KETIKA data sudah sukses masuk database MySQL
+                // Tampilkan pop-up KETIKA data sudah sukses masuk database MySQL
                 Swal.fire({
                     title: 'Pembelian Berhasil!',
                     text: 'Terima kasih, pesanan Anda telah disimpan ke riwayat pembelian.',
@@ -304,7 +298,7 @@
                         const navBadge = document.getElementById('cartCount');
                         if(navBadge) navBadge.innerText = '0';
                         
-                        // Lempar user ke halaman riwayat pesanan riil
+                        // Lanjut ke riwayat pesanan riil
                         window.location.href = "{{ route('riwayat.pesanan') }}"; 
                     }
                 });
