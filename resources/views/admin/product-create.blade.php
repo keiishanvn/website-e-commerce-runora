@@ -73,7 +73,7 @@
                 <input type="number" name="stok" value="{{ old('stok') }}" required placeholder="0" class="w-full border border-gray-200 p-3.5 rounded-xl outline-none focus:ring-2 focus:ring-[#C81010]/20">
             </div>
 
-            // MEDIA PRODUK
+            {{-- MEDIA PRODUK --}}
             <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
                 <h2 class="text-lg font-bold border-b pb-2">MEDIA PRODUK</h2>
                 

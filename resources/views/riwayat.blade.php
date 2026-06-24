@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                // Navigasi Menu Vertikal
+                {{-- Navigasi Menu Vertikal --}}
                 <div class="nav flex-column border-bottom border-secondary-subtle">
                     <a href="{{ route('riwayat.pesanan') }}" class="nav-link text-dark fw-bold px-4 py-3 d-flex align-items-center gap-3 text-decoration-none border-bottom border-secondary-subtle bg-light" style="font-size: 0.85rem;">
                         <i class="fas fa-history fs-5"></i> Riwayat Pesanan
@@ -40,13 +40,13 @@
             </div>
         </div>
 
-        //2. KONTEN SEBELAH KANAN: TABEL DATA RIWAYAT PESANAN 
+        {{-- 2. KONTEN SEBELAH KANAN: TABEL DATA RIWAYAT PESANAN --}}
         <div class="col-md-9 flex-grow-1 bg-white px-5 py-5">
             
-            // Judul Halaman 
+            {{-- Judul Halaman --}}
             <h2 class="fw-black text-dark text-uppercase tracking-tight mb-5 fs-4" style="letter-spacing: 0.3px;">RIWAYAT PESANAN</h2>
 
-            // Struktur Tabel Minimalis
+            {{-- Struktur Tabel Minimalis --}}
             <div class="table-responsive">
                 <table class="table align-middle border-0 table-hover m-0">
                     

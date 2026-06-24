@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController; 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminProductController; 
+use App\Http\Controllers\Admin\DistribusiController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/distribusi', [AdminDashboardController::class, 'distribusi'])->name('distribusi');
     Route::get('/pengaturan', [AdminDashboardController::class, 'pengaturan'])->name('pengaturan');
     Route::put('/pengaturan/update', [AdminDashboardController::class, 'pengaturanUpdate'])->name('pengaturan.update');
+    Route::get('/distribusi', [DistribusiController::class, 'index'])->name('distribusi');
 });
 
 // Shortcut Pembersih Session

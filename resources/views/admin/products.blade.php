@@ -4,7 +4,7 @@
 
 @section('content')
 
-// 1. POPUP NOTIFIKASI SUKSES 
+{{-- 1. POPUP NOTIFIKASI SUKSES --}}
 @if(session('success'))
 <div id="successPopup" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-6 w-80 text-center shadow-2xl transition-all">
@@ -20,7 +20,7 @@
 </div>
 @endif
 
-// 2. HEADER HALAMAN 
+{{-- 2. HEADER HALAMAN --}}
 <div class="flex justify-between items-start mb-8">
     <div>
         <h1 class="text-2xl font-bold uppercase tracking-tight text-gray-800">DATA PRODUK</h1>
@@ -32,7 +32,7 @@
     </a>
 </div>
 
-// 3. FORM FILTER PENCARIAN 
+{{-- 3. FORM FILTER PENCARIAN --}}
 <form method="GET" action="{{ route('admin.produk.index') }}" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-wrap gap-4 items-center">
     <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari produk..." class="px-4 py-2 border border-gray-200 rounded-lg w-64 outline-none focus:border-red-500 text-sm transition">
 
@@ -54,7 +54,7 @@
     <a href="{{ route('admin.produk.index') }}" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 text-sm font-medium transition flex items-center">Reset</a>
 </form>
 
-// 4. TABEL UTAMA DATA PRODUK 
+{{-- 4. TABEL UTAMA DATA PRODUK --}}
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-[800px] w-full text-left border-collapse">
@@ -86,7 +86,6 @@
                                 <div class="w-10 h-10 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 shadow-sm"><i class="fas fa-image text-sm"></i></div>
                             @endif
                             
-                            {{-- FIX UTAMA: Memastikan memanggil kolom 'name' dari database tanpa backtick terbalik --}}
                             <span class="font-semibold text-gray-700">{{ $row->name ?? 'Produk Tanpa Nama' }}</span>
                         </div>
                     </td>
@@ -140,7 +139,7 @@
     </div>
 </div>
 
-// 5. MODAL ZOOM DETAIL GAMBAR 
+{{-- 5. MODAL ZOOM DETAIL GAMBAR  --}}
 <div id="imageModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 backdrop-blur-sm transition-all duration-300">
     <span onclick="closeImageModal()" class="absolute top-5 right-8 text-white text-3xl cursor-pointer hover:text-gray-300 transition">&times;</span>
     <img id="modalImg" class="max-w-[80%] max-h-[80%] rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300">

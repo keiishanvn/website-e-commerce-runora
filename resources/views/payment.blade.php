@@ -13,13 +13,13 @@
     </div>
     <h2 class="fw-black text-dark mb-4 tracking-tight fs-3 text-uppercase">PEMBAYARAN</h2>
 
-    // Formulir Checkout Utama
+    {{-- Formulir Checkout Utama --}}
     <form action="{{ route('checkout.process') }}" method="POST" id="main-payment-form">
         @csrf
 
         <div class="row g-4 items-start">
 
-            // ── SEKTOR KIRI: INFORMASI PEMBAYARAN & DAFTAR ITEM BELANJA ──
+            {{-- ── SEKTOR KIRI: INFORMASI PEMBAYARAN & DAFTAR ITEM BELANJA ── --}}
             <div class="col-lg-7">
                 <h3 class="fw-bold text-dark fs-5 mb-3">Informasi Pembayaran</h3>
 
@@ -79,7 +79,7 @@
                         @endforeach
                     </div>
 
-                    // Pilihan Metode Pembayaran
+                    {{-- Pilihan Metode Pembayaran --}}
                     <div class="card-body px-4 py-3 bg-white border-top border-light-subtle">
                         <p class="fw-bold text-dark mb-3" style="font-size: 0.85rem; letter-spacing: 0.3px;">Metode Pembayaran</p>
                         <div class="d-flex flex-column gap-3">
@@ -111,7 +111,7 @@
                 </div>
             </div>
 
-            // SEKTOR KANAN: RINGKASAN PESANAN & ALAMAT PENGIRIMAN 
+            {{-- SEKTOR KANAN: RINGKASAN PESANAN & ALAMAT PENGIRIMAN --}}
             <div class="col-lg-5">
                 <h3 class="fw-bold text-dark fs-5 mb-0">Ringkasan Pesanan</h3>
                 <p class="text-muted mb-3" style="font-size: 0.75rem;">Dijual dan dikirim oleh <span class="fw-bold text-secondary-dark">RUNORA</span></p>
@@ -144,7 +144,7 @@
                 </div>
             </div>
 
-            // Button Checkout Utama
+            {{-- Button Checkout Utama --}}
             <div class="col-12 mt-4">
                 <button type="submit" id="btn-submit-checkout" class="btn btn-white border border-danger text-danger w-100 py-3 rounded-2 fw-bold tracking-widest text-uppercase shadow-sm fs-6 btn-checkout-runora">
                     CHECKOUT
@@ -154,7 +154,7 @@
     </form>
 </div>
 
-// Modal Edit Alamat 
+{{-- Modal Edit Alamat  --}}
 <div class="modal fade" id="editAlamatModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
         <div class="modal-content border-0 rounded-3 shadow-lg px-3 py-2">

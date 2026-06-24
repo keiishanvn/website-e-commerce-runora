@@ -16,7 +16,7 @@
         <button class="btn btn-filter {{ $kategoriAktif == 'Aksesoris' ? 'active' : '' }}" data-cat="Aksesoris">Aksesoris</button>
     </div>
     
-    // GRID DAFTAR PRODUK KATALOG 
+    {{-- GRID DAFTAR PRODUK KATALOG --}}
     <div class="row g-4" id="productsGrid">
         @forelse($products as $product)
         <div class="col-md-3">
@@ -26,7 +26,7 @@
                  onmouseover="this.style.transform='scale(1.03)'"
                  onmouseout="this.style.transform='scale(1)'">
                 
-                // AREA GAMBAR PRODUK
+                {{-- AREA GAMBAR PRODUK --}}
                 <div class="bg-light text-muted d-flex align-items-center justify-content-center rounded mb-3 overflow-hidden position-relative" style="height: 180px;">
                     @if($product->gambar)
                         <img src="{{ asset('products/' . $product->gambar) }}" alt="{{ $product->name }}" class="w-100 h-100 object-fit-cover">
@@ -34,7 +34,7 @@
                         <span class="text-center p-2 text-xs">[ {{ $product->name }} ]</span>
                     @endif
 
-                    // Tag Badge Persen Diskon
+                    {{-- Tag Badge Persen Diskon --}}
                     @if($product->diskon > 0)
                         <span class="position-absolute top-0 start-0 badge bg-danger m-2 text-xs">
                             -{{ $product->diskon }}%
@@ -42,7 +42,7 @@
                     @endif
                 </div>
 
-                // AREA INFORMASI PRODUK
+                {{-- AREA INFORMASI PRODUK --}}
                 <div class="product-info mt-auto">
                     <span class="badge bg-danger mb-2">{{ $product->kategori ?? 'Running Gear' }}</span>
                     <h6 class="text-dark font-weight-bold text-truncate" title="{{ $product->name }}">{{ $product->name }}</h6>
@@ -53,7 +53,7 @@
                         $hargaSetelahDiskon = $hargaAsli - ($hargaAsli * $persenDiskon / 100);
                     @endphp
 
-                    // Perhitungan Skema Harga Coret
+                    {{-- Perhitungan Skema Harga Coret --}}
                     <div class="mt-2">
                         @if($persenDiskon > 0)
                             <span class="text-muted text-decoration-line-through text-sm d-block" style="font-size: 0.85rem;">
@@ -72,7 +72,7 @@
             </div>
         </div>
         @empty
-        // Jika produk di kategori tersebut kosong
+        {{-- Jika produk di kategori tersebut kosong --}}
         <div class="col-114 text-center py-5 text-muted">
             <i class="fas fa-box-open fa-3x mb-3 text-secondary"></i>
             <h5>Belum ada produk untuk kategori ini.</h5>

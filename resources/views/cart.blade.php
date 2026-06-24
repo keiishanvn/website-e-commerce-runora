@@ -37,12 +37,12 @@
                         </tr>
                     </thead>
 
-                    // Isi Daftar Produk
+                    {{-- Isi Daftar Produk --}}
                     <tbody class="border-0">
                         @foreach ($carts as $cart)
                         <tr class="border-bottom border-2 border-light row-cart-item" id="product-row-{{ $cart->id }}">
 
-                            // Komponen Gambar + Detail Produk
+                            {{-- Komponen Gambar + Detail Produk --}}
                             <td class="py-4 px-3">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="border border-secondary-subtle rounded-3 p-1 bg-white flex-shrink-0 d-flex align-items-center justify-content-center" 
@@ -58,16 +58,16 @@
                                 </div>
                             </td>
 
-                            // Harga Satuan
+                            {{-- Harga Satuan --}}
                             <td class="py-4 px-3 text-center fw-semibold text-secondary-dark fs-6 whitespace-nowrap">
                                 Rp. {{ number_format($cart->product->harga, 0, ',', '.') }}
                             </td>
 
-                            // Tombol Plus Minus Kotak Abu Sesuai Gambar
+                            {{-- Tombol Plus Minus Kotak Abu Sesuai Gambar --}}
                             <td class="py-4 px-3">
                                 <div class="d-flex justify-content-center">
                                     <div class="input-group input-group-sm border border-secondary rounded overflow-hidden bg-light" style="width: 90px;">
-                                        // Tombol Minus Terbuka Aksesnya Tanpa Atribut Pembatas Min Kaku
+                                        {{-- Tombol Minus Terbuka Aksesnya Tanpa Atribut Pembatas Min Kaku --}}
                                         <button class="btn btn-link text-decoration-none text-dark fw-bold px-2 py-0 bg-secondary-subtle border-end border-secondary" 
                                                 type="button" onclick="updateQty({{ $cart->id }}, -1)">-</button>
                                         
@@ -80,12 +80,12 @@
                                 </div>
                             </td>
 
-                            // Hitungan Subtotal Dinamis Riil
+                            {{-- Hitungan Subtotal Dinamis Riil --}}
                             <td class="py-4 px-3 text-center fw-bold text-dark fs-6 whitespace-nowrap" id="subtotal-{{ $cart->id }}">
                                 Rp. {{ number_format($cart->product->harga * $cart->kuantitas, 0, ',', '.') }}
                             </td>
 
-                            // Kotak Checkbox Centang Tebal
+                            {{-- Kotak Checkbox Centang Tebal --}}
                             <td class="py-4 px-3 text-center">
                                 <div class="d-flex justify-content-center align-items-center">
                                     <input type="checkbox" name="selected[]" value="{{ $cart->id }}" 
@@ -96,7 +96,7 @@
                                 </div>
                             </td>
 
-                            // AKSI BARU: Tombol Hapus Sampah Langsung Dari Baris Tabel
+                            {{-- AKSI BARU: Tombol Hapus Sampah Langsung Dari Baris Tabel --}}
                             <td class="py-4 px-3 text-center">
                                 <button type="button" class="btn btn-link text-danger p-0" onclick="confirmDeleteRow({{ $cart->id }})">
                                     <i class="fas fa-trash-alt fs-5"></i>
@@ -112,7 +112,7 @@
 
             <hr class="text-secondary-subtle border-1 my-4">
 
-            // Ringkasan Grand Total & Tombol Navigasi
+            {{-- Ringkasan Grand Total & Tombol Navigasi --}}
             <div id="cart-summary-area" class="d-flex flex-column align-items-end gap-3 mt-3 w-100 pe-2">
                 <div class="d-flex align-items-center" style="gap: 60px;">
                     <span class="fw-bold text-dark fs-5">Total:</span>

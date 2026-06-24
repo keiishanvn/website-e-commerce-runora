@@ -9,7 +9,7 @@
     </a>
 
     <div class="row">
-        // KIRI: AREA GAMBAR PRODUK
+        {{-- KIRI: AREA GAMBAR PRODUK --}}
         <div class="col-md-6">
             <div class="position-relative border rounded-4 overflow-hidden shadow-sm bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
                 @if($product->gambar)
@@ -28,7 +28,7 @@
                 @endif
             </div>
 
-            // Thumbnail Gambar Detail
+            {{-- Thumbnail Gambar Detail --}}
             @php
                 $gambarDetailList = DB::table('product_images')->where('product_id', $product->id)->get();
             @endphp
@@ -51,7 +51,7 @@
             @endif
         </div>
         
-        // KANAN: DETAIL INFORMASI & TOMBOL UTAMA 
+        {{-- KANAN: DETAIL INFORMASI & TOMBOL UTAMA --}}
         <div class="col-md-6">
             <h1 class="fw-bold mb-2 text-dark">{{ $product->name }}</h1>
             <span class="badge bg-danger rounded-pill px-3 py-2 mb-3">{{ $product->kategori ?? 'Umum' }}</span>
@@ -94,7 +94,7 @@
                 <p class="text-secondary lh-base" style="text-align: justify;">{{ $product->deskripsi ?? 'Belum ada deskripsi untuk produk ini.' }}</p>
             </div>
 
-            // FORM 1: HANYA UNTUK TAMBAH KE KERANJANG
+            {{-- FORM 1: HANYA UNTUK TAMBAH KE KERANJANG --}}
             <form id="add-to-cart-form" class="mt-4 border-top pt-3">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -131,7 +131,7 @@
                 </div>
             </form>
 
-            // FORM 2: UNTUK BELI SEKARANG
+            {{-- FORM 2: UNTUK BELI SEKARANG --}}
             <form action="{{ route('cart.buy_now') }}" method="POST" class="w-100 mt-2" id="direct-buy-form">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
